@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Daily Standard — Leadership Journal</title>
+<meta name="description" content="Leadership lessons on discipline, clarity, culture, and accountability. A journal for leaders who manage real teams under real pressure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================
+   CSS CUSTOM PROPERTIES — DESIGN SYSTEM
+   ============================================ */
+:root {
+  --color-ink:        #0D0D0D;
+  --color-charcoal:   #1C1C1C;
+  --color-steel:      #3D3D3D;
+  --color-rule:       #D4D0C8;
+  --color-warm-white: #F7F5F0;
+  --color-paper:      #EFECE6;
+  --color-accent:     #B8321A;
+  --color-accent-dark:#8C2412;
+  --color-white:      #FFFFFF;
+
+  --space-xs:   8px;
+  --space-sm:   16px;
+  --space-md:   32px;
+  --space-lg:   64px;
+  --space-xl:   96px;
+  --space-2xl:  128px;
+  --space-3xl:  180px;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-serif:   'DM Serif Display', Georgia, serif;
+  --font-sans:    'DM Sans', system-ui, sans-serif;
+  --font-body:    'Lora', Georgia, serif;
+
+  --max-width:    1280px;
+  --read-width:   680px;
+  --wide-width:   960px;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-warm-white);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.1vw, 19px);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  border-top: 3px solid var(--color-ink);
+  position: relative;
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: var(--font-sans); border: none; background: none; }
+
+/* Page sections (SPA routing) */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 3px;
+  left: 0; right: 0;
+  z-index: 100;
+  padding: 0 5vw;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 300ms ease, border-color 300ms ease;
+  border-bottom: 1px solid transparent;
+}
+
+.nav.scrolled {
+  background: rgba(247, 245, 240, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom-color: var(--color-rule);
+}
+
+.nav-logo {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-lg);
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--color-charcoal);
+  letter-spacing: 0.02em;
+  transition: color 200ms ease;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-links a.active { color: var(--color-accent); }
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--color-ink);
+  transition: all 200ms ease;
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-ink);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.mobile-menu.open { display: flex; }
+
+.mobile-menu-close {
+  position: absolute;
+  top: 28px; right: 5vw;
+  color: var(--color-white);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  color: var(--color-white);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms ease, transform 300ms ease, color 200ms ease;
+  cursor: pointer;
+}
+
+.mobile-menu.open a {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mobile-menu.open a:nth-child(1) { transition-delay: 100ms; }
+.mobile-menu.open a:nth-child(2) { transition-delay: 180ms; }
+.mobile-menu.open a:nth-child(3) { transition-delay: 260ms; }
+.mobile-menu.open a:nth-child(4) { transition-delay: 340ms; }
+.mobile-menu.open a:nth-child(5) { transition-delay: 420ms; }
+.mobile-menu a:hover { color: var(--color-accent); }
+
+/* ============================================
+   TYPOGRAPHY UTILITIES
+   ============================================ */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  padding: 3px 8px;
+  display: inline-block;
+}
+
+.tag-dark {
+  color: var(--color-white);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--color-steel);
+  text-transform: uppercase;
+}
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================ */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.container-wide {
+  max-width: var(--wide-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.container-read {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.rule { 
+  border: none; 
+  border-top: 1px solid var(--color-rule); 
+  margin: 0;
+}
+
+.section {
+  padding: var(--space-xl) 0;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 14px 28px;
+  display: inline-block;
+  transition: all 200ms ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btn-filled {
+  background: var(--color-ink);
+  color: var(--color-white);
+  border: 1px solid var(--color-ink);
+}
+.btn-filled:hover {
+  background: var(--color-white);
+  color: var(--color-ink);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+}
+.btn-outline:hover {
+  background: var(--color-ink);
+  color: var(--color-white);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-white);
+  border: 1px solid var(--color-accent);
+}
+.btn-accent:hover {
+  background: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+}
+
+/* ============================================
+   SCROLL REVEAL
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   PAGE: HOMEPAGE
+   ============================================ */
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 5vw;
+  padding-bottom: var(--space-xl);
+  padding-top: 120px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero-eyebrow {
+  margin-bottom: var(--space-md);
+  animation: fadeUp 600ms ease 200ms both;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(58px, 9vw, 108px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  animation: fadeUp 700ms ease 400ms both;
+  max-width: 860px;
+}
+
+.hero-sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(16px, 1.4vw, 22px);
+  color: var(--color-steel);
+  margin-top: var(--space-md);
+  animation: fadeUp 700ms ease 600ms both;
+  max-width: 480px;
+}
+
+.hero-rule {
+  width: 48px;
+  height: 2px;
+  background: var(--color-ink);
+  margin: var(--space-md) 0;
+  animation: fadeUp 700ms ease 700ms both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  animation: fadeUp 700ms ease 800ms both;
+}
+
+.hero-bottom-rule {
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--space-xl);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Featured Article */
+.featured-section {
+  padding: var(--space-xl) 0;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.featured-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
+.featured-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.featured-tag { margin-bottom: var(--space-sm); }
+
+.featured-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(36px, 4vw, 58px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-md);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.featured-h2:hover { color: var(--color-accent); }
+
+.featured-excerpt {
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.7;
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-md);
+}
+
+.text-link {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-ink);
+  padding-bottom: 2px;
+  transition: color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
+}
+.text-link:hover { color: var(--color-accent); border-color: var(--color-accent); }
+
+.featured-pullquote {
+  background: var(--color-paper);
+  border-left: 4px solid var(--color-accent);
+  padding: var(--space-md) var(--space-md) var(--space-md) calc(var(--space-md) + 12px);
+  margin-top: 60px;
+}
+
+.featured-pullquote blockquote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.6;
+  color: var(--color-ink);
+  margin-bottom: var(--space-sm);
+}
+
+.featured-pullquote cite {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  font-style: normal;
+}
+
+/* The Standard (Manifesto) */
+.manifesto-section {
+  padding: var(--space-3xl) 0;
+  border-bottom: 1px solid var(--color-rule);
+  text-align: center;
+}
+
+.manifesto-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.manifesto-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  margin-bottom: var(--space-lg);
+}
+
+.manifesto-text {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 2.0;
+  color: var(--color-ink);
+}
+
+.manifesto-text p { margin-bottom: var(--space-md); }
+.manifesto-text p:last-child { margin-bottom: 0; }
+
+/* Pillars */
+.pillars-section {
+  padding: var(--space-xl) 0;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.pillars-header {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.section-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3vw, 38px);
+  color: var(--color-ink);
+}
+
+.pillars-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--color-rule);
+  border: 1px solid var(--color-rule);
+}
+
+.pillar-card {
+  background: var(--color-warm-white);
+  padding: var(--space-md) var(--space-md) var(--space-lg);
+  position: relative;
+  overflow: hidden;
+  transition: background 200ms ease;
+}
+.pillar-card:hover { background: var(--color-paper); }
+
+.pillar-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 120px;
+  color: var(--color-ink);
+  opacity: 0.04;
+  position: absolute;
+  bottom: -20px;
+  right: -8px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.pillar-title {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2vw, 28px);
+  margin-bottom: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.pillar-def {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+}
+
+/* Standard of the Day */
+.sotd-section {
+  background: var(--color-ink);
+  padding: var(--space-xl) 0;
+}
+
+.sotd-inner {
+  max-width: var(--wide-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  text-align: center;
+}
+
+.sotd-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: var(--space-md);
+}
+
+.sotd-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(64px, 10vw, 100px);
+  color: var(--color-accent);
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
+}
+
+.sotd-quote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 30px);
+  color: var(--color-white);
+  line-height: 1.5;
+  max-width: 640px;
+  margin: 0 auto var(--space-md);
+}
+
+.sotd-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.sotd-archive {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-top: var(--space-md);
+  display: inline-block;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 2px;
+  transition: color 200ms ease;
+  cursor: pointer;
+}
+.sotd-archive:hover { color: var(--color-white); }
+
+/* Latest Articles */
+.articles-section {
+  padding: var(--space-xl) 0;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.articles-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--color-rule);
+  border: 1px solid var(--color-rule);
+  margin-top: var(--space-lg);
+}
+
+.article-card {
+  background: var(--color-warm-white);
+  padding: var(--space-md);
+  transition: background 200ms ease;
+  cursor: pointer;
+}
+.article-card:hover { background: var(--color-paper); }
+.article-card:hover .article-card-title { color: var(--color-accent); }
+
+.article-card-tag { margin-bottom: var(--space-sm); }
+
+.article-card-title {
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.25;
+  margin-bottom: var(--space-sm);
+  transition: color 200ms ease;
+}
+
+.article-card-excerpt {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Newsletter */
+.newsletter-section {
+  background: var(--color-ink);
+  padding: var(--space-xl) 0;
+}
+
+.newsletter-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 5vw;
+  text-align: center;
+}
+
+.newsletter-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-md);
+}
+
+.newsletter-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--color-white);
+  line-height: 1.1;
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.01em;
+}
+
+.newsletter-body {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: var(--space-lg);
+  font-size: 17px;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.newsletter-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--color-white);
+  padding: 14px 18px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+.newsletter-input::placeholder { color: rgba(255,255,255,0.35); }
+.newsletter-input:focus { border-color: rgba(255,255,255,0.6); }
+
+.newsletter-fine {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: var(--space-sm);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================
+   PAGE: ARTICLE
+   ============================================ */
+.article-page {
+  padding-top: 100px;
+}
+
+.article-header {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-xl) 5vw var(--space-lg);
+  text-align: center;
+}
+
+.article-header-tag { margin-bottom: var(--space-md); }
+
+.article-h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(36px, 5.5vw, 68px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+.article-deck {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(17px, 1.4vw, 20px);
+  color: var(--color-steel);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-meta-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  margin-bottom: var(--space-lg);
+}
+
+.article-meta-dot { color: var(--color-rule); }
+
+.article-full-rule { 
+  border-top: 1px solid var(--color-rule);
+  margin-bottom: var(--space-xl);
+}
+
+/* Article Body */
+.article-body {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  font-size: clamp(17px, 1.2vw, 19px);
+  line-height: 1.8;
+  color: var(--color-charcoal);
+}
+
+.article-body p { margin-bottom: var(--space-md); }
+
+.article-body h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2vw, 28px);
+  color: var(--color-ink);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-md);
+  line-height: 1.2;
+}
+
+/* Drop cap */
+.article-body > p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 5.2em;
+  line-height: 0.78;
+  float: left;
+  margin-right: 10px;
+  margin-top: 6px;
+  color: var(--color-ink);
+}
+
+.pullquote {
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-paper);
+  margin: var(--space-lg) 0;
+  padding: var(--space-md) var(--space-md) var(--space-md) calc(var(--space-md) + 8px);
+}
+
+.pullquote p {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.55;
+  color: var(--color-ink);
+  margin-bottom: 0 !important;
+}
+
+/* Article Footer */
+.article-footer {
+  max-width: var(--read-width);
+  margin: var(--space-xl) auto 0;
+  padding: 0 5vw var(--space-xl);
+  border-top: 1px solid var(--color-rule);
+  padding-top: var(--space-lg);
+}
+
+.read-next-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+}
+
+.read-next-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.read-next-card {
+  border: 1px solid var(--color-rule);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.read-next-card:hover { background: var(--color-paper); }
+.read-next-card:hover .read-next-title { color: var(--color-accent); }
+
+.read-next-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.3;
+  margin-top: var(--space-xs);
+  transition: color 200ms ease;
+}
+
+/* ============================================
+   PAGE: START HERE
+   ============================================ */
+.start-here-page {
+  padding-top: 100px;
+}
+
+.start-hero {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: var(--space-xl) 5vw var(--space-lg);
+}
+
+.start-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(52px, 7vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+.start-hero-sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(17px, 1.4vw, 20px);
+  color: var(--color-steel);
+  max-width: 520px;
+}
+
+.start-section {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: var(--space-lg) 5vw;
+  border-top: 1px solid var(--color-rule);
+}
+
+.start-section h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.5vw, 32px);
+  margin-bottom: var(--space-md);
+}
+
+.start-section p {
+  margin-bottom: var(--space-md);
+  color: var(--color-charcoal);
+}
+
+.start-section p:last-child { margin-bottom: 0; }
+
+.starter-articles {
+  max-width: var(--wide-width);
+  margin: 0 auto;
+  padding: var(--space-lg) 5vw;
+  border-top: 1px solid var(--color-rule);
+}
+
+.starter-articles h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.5vw, 32px);
+  margin-bottom: var(--space-lg);
+}
+
+.starter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--color-rule);
+  border: 1px solid var(--color-rule);
+}
+
+.starter-card {
+  background: var(--color-warm-white);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.starter-card:hover { background: var(--color-paper); }
+.starter-card:hover .starter-title { color: var(--color-accent); }
+
+.starter-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 48px;
+  color: var(--color-ink);
+  opacity: 0.08;
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+}
+
+.starter-title {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.8vw, 24px);
+  margin-bottom: var(--space-sm);
+  transition: color 200ms ease;
+}
+
+.starter-desc {
+  font-size: 14px;
+  color: var(--color-steel);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   PAGE: ABOUT
+   ============================================ */
+.about-page {
+  padding-top: 100px;
+}
+
+.about-hero {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: var(--space-xl) 5vw var(--space-lg);
+}
+
+.about-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(52px, 7vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+.about-section {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: var(--space-lg) 5vw;
+  border-top: 1px solid var(--color-rule);
+}
+
+.about-section h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2vw, 28px);
+  margin-bottom: var(--space-md);
+  color: var(--color-ink);
+}
+
+.about-section p {
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-md);
+}
+.about-section p:last-child { margin-bottom: 0; }
+
+/* ============================================
+   PAGE: BLOG
+   ============================================ */
+.blog-page {
+  padding-top: 100px;
+}
+
+.blog-hero {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) 5vw var(--space-lg);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.blog-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(48px, 7vw, 80px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-sm);
+}
+
+.blog-hero-sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-steel);
+  font-size: 17px;
+}
+
+.blog-layout {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--space-2xl);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-xl);
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: var(--space-lg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-btn {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  padding: 12px 18px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-bottom: -1px;
+}
+.filter-btn:hover,
+.filter-btn.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* Article list */
+.article-entry {
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-rule);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.article-entry:first-child { border-top: 1px solid var(--color-rule); }
+.article-entry:hover .article-entry-title { color: var(--color-accent); }
+
+.article-entry-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.article-entry-title {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  transition: color 200ms ease;
+}
+
+.article-entry-excerpt {
+  font-size: 14px;
+  color: var(--color-steel);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.blog-sidebar {
+  padding-top: 0;
+}
+
+.sidebar-section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-rule);
+}
+.sidebar-section:last-child { border-bottom: none; }
+
+.sidebar-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+}
+
+.sidebar-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sidebar-links a {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-charcoal);
+  font-weight: 500;
+  transition: color 200ms ease;
+  cursor: pointer;
+}
+.sidebar-links a:hover { color: var(--color-accent); }
+
+/* Sidebar newsletter */
+.sidebar-newsletter {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  padding: var(--space-md);
+}
+
+.sidebar-newsletter-h { 
+  font-family: var(--font-serif);
+  font-size: 18px;
+  margin-bottom: var(--space-sm);
+}
+
+.sidebar-newsletter p {
+  font-size: 13px;
+  color: var(--color-steel);
+  margin-bottom: var(--space-md);
+  line-height: 1.6;
+}
+
+.sidebar-newsletter-input {
+  width: 100%;
+  background: var(--color-warm-white);
+  border: 1px solid var(--color-rule);
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  margin-bottom: var(--space-sm);
+  outline: none;
+  transition: border-color 200ms ease;
+}
+.sidebar-newsletter-input:focus { border-color: var(--color-ink); }
+
+/* ============================================
+   PAGE: CONTACT
+   ============================================ */
+.contact-page {
+  padding-top: 100px;
+}
+
+.contact-hero {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: var(--space-xl) 5vw var(--space-lg);
+}
+
+.contact-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(52px, 7vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-md);
+}
+
+.contact-hero p {
+  font-family: var(--font-body);
+  color: var(--color-charcoal);
+  font-size: 17px;
+  max-width: 440px;
+}
+
+.contact-form-wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-lg) 5vw var(--space-xl);
+  border-top: 1px solid var(--color-rule);
+}
+
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.form-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: var(--color-warm-white);
+  border: 1px solid var(--color-rule);
+  color: var(--color-ink);
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 200ms ease;
+  display: block;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.form-textarea { min-height: 140px; resize: vertical; }
+.form-input:focus,
+.form-textarea:focus { border-color: var(--color-ink); }
+
+.form-fine {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-steel);
+  margin-top: var(--space-sm);
+  letter-spacing: 0.03em;
+}
+
+.form-success {
+  display: none;
+  background: var(--color-paper);
+  border-left: 4px solid var(--color-accent);
+  padding: var(--space-md);
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-ink);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--color-ink);
+  padding: var(--space-lg) 0;
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-md);
+  list-style: none;
+}
+
+.footer-links a {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  transition: color 200ms ease;
+  cursor: pointer;
+}
+.footer-links a:hover { color: var(--color-white); }
+
+.footer-copy {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+  .articles-grid { grid-template-columns: repeat(2, 1fr); }
+  .featured-inner { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .featured-pullquote { margin-top: 0; }
+  .blog-layout { grid-template-columns: 1fr; }
+  .blog-sidebar { display: none; }
+  .read-next-grid { grid-template-columns: 1fr; }
+  .starter-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; gap: var(--space-md); text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 600px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+  .articles-grid { grid-template-columns: 1fr; }
+  .newsletter-form { flex-direction: column; }
+  .hero-actions { flex-direction: column; }
+  .hero-actions .btn { text-align: center; }
+  .sotd-section .tag { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     NAVIGATION
+     ============================================ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo" onclick="showPage('home')">The Daily Standard</div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" data-page="home">Home</a></li>
+    <li><a onclick="showPage('start-here')" data-page="start-here">Start Here</a></li>
+    <li><a onclick="showPage('blog')" data-page="blog">Blog</a></li>
+    <li><a onclick="showPage('about')" data-page="about">About</a></li>
+    <li><a onclick="showPage('contact')" data-page="contact">Contact</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="openMobileMenu()" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-close" onclick="closeMobileMenu()">Close ✕</div>
+  <a onclick="showPage('home');closeMobileMenu()">Home</a>
+  <a onclick="showPage('start-here');closeMobileMenu()">Start Here</a>
+  <a onclick="showPage('blog');closeMobileMenu()">Blog</a>
+  <a onclick="showPage('about');closeMobileMenu()">About</a>
+  <a onclick="showPage('contact');closeMobileMenu()">Contact</a>
+</div>
+
+<!-- ============================================
+     PAGE: HOME
+     ============================================ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section style="border-bottom: 1px solid var(--color-rule);">
+    <div class="hero">
+      <div class="hero-eyebrow eyebrow">Est. 2024 · Leadership Journal</div>
+      <h1>The Daily<br>Standard.</h1>
+      <p class="hero-sub">Leadership lessons on discipline, clarity, culture, and accountability.</p>
+      <div class="hero-rule"></div>
+      <div class="hero-actions">
+        <button class="btn btn-filled" onclick="showArticle('standards-are-love')">Read the Latest Article</button>
+        <button class="btn btn-outline" onclick="showPage('start-here')">Start Here</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Article -->
+  <section class="featured-section reveal">
+    <div class="featured-inner">
+      <div>
+        <div class="featured-label">Featured Standard · March 2026</div>
+        <div class="featured-tag"><span class="tag">Discipline</span></div>
+        <h2 class="featured-h2" onclick="showArticle('standards-are-love')">Standards Are Love</h2>
+        <p class="featured-excerpt">True leadership is not kindness in the absence of standards. It is the discipline to hold everyone — including yourself — to the highest possible expectation. That is the most sincere form of respect available in any professional relationship.</p>
+        <span class="text-link" onclick="showArticle('standards-are-love')">Read the Full Article →</span>
+      </div>
+      <div>
+        <div class="featured-pullquote">
+          <blockquote>"The most loving thing a leader can do is refuse to let their team be average."</blockquote>
+          <cite>— Standards Are Love</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Standard — Manifesto -->
+  <section class="manifesto-section reveal">
+    <div class="manifesto-inner">
+      <div class="manifesto-label">The Standard</div>
+      <div class="manifesto-text">
+        <p>Great teams are not built on motivation.<br>They are built on standards.</p>
+        <p>Clarity over noise.<br>Discipline over excuses.<br>Accountability over comfort.</p>
+        <p>Leadership is not a title.<br>Leadership is the standard you enforce.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leadership Pillars -->
+  <section class="pillars-section reveal">
+    <div class="pillars-header">
+      <h2 class="section-h2">The Four Pillars</h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <div class="eyebrow" style="margin-top:8px;">Pillar One</div>
+        <div class="pillar-title">Discipline</div>
+        <p class="pillar-def">Consistent standards. Relentless follow-through. No exceptions for anyone, including the leader.</p>
+        <span class="text-link" onclick="filterBlog('Discipline')">Read Articles →</span>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <div class="eyebrow" style="margin-top:8px;">Pillar Two</div>
+        <div class="pillar-title">Clarity</div>
+        <p class="pillar-def">Clear expectations remove confusion. Confusion is a leadership failure, not a team failure.</p>
+        <span class="text-link" onclick="filterBlog('Clarity')">Read Articles →</span>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <div class="eyebrow" style="margin-top:8px;">Pillar Three</div>
+        <div class="pillar-title">Culture</div>
+        <p class="pillar-def">Culture is not what you preach. It is what you tolerate. Every day you tolerate the standard you own.</p>
+        <span class="text-link" onclick="filterBlog('Culture')">Read Articles →</span>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">04</div>
+        <div class="eyebrow" style="margin-top:8px;">Pillar Four</div>
+        <div class="pillar-title">Accountability</div>
+        <p class="pillar-def">Accountability is not punishment. It is the promise that standards mean something here.</p>
+        <span class="text-link" onclick="filterBlog('Leadership')">Read Articles →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Standard of the Day -->
+  <section class="sotd-section reveal">
+    <div class="sotd-inner">
+      <div class="sotd-label">Standard of the Day</div>
+      <div class="sotd-num">#17</div>
+      <p class="sotd-quote">"If the leader is calm, the room is calm."</p>
+      <div class="sotd-meta">
+        <span class="tag tag-dark">Leadership</span>
+        <span class="meta" style="color: rgba(255,255,255,0.35); margin-left:8px;">March 10, 2026</span>
+      </div>
+      <div><span class="sotd-archive">Browse All Standards →</span></div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section class="articles-section reveal">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <h2 class="section-h2">Latest Articles</h2>
+        <span class="text-link" onclick="showPage('blog')">View All →</span>
+      </div>
+    </div>
+    <div class="articles-grid">
+      <div class="article-card" onclick="showArticle('culture-is-what-you-tolerate')">
+        <div class="article-card-tag"><span class="tag">Culture</span></div>
+        <div class="article-card-title">Culture Is What You Tolerate</div>
+        <p class="article-card-excerpt">The culture of any organization is defined by the worst behavior the leader is willing to accept without consequence.</p>
+        <div class="meta" style="margin-top: auto;">March 09, 2026 · 5 min read</div>
+      </div>
+      <div class="article-card" onclick="showArticle('hope-is-not-a-strategy')">
+        <div class="article-card-tag"><span class="tag">Discipline</span></div>
+        <div class="article-card-title">Hope Is Not a Strategy</div>
+        <p class="article-card-excerpt">Successful results are the product of rigorous discipline and proven systems, not wishful thinking or luck.</p>
+        <div class="meta" style="margin-top: auto;">March 07, 2026 · 4 min read</div>
+      </div>
+      <div class="article-card" onclick="showArticle('clarity-beats-motivation')">
+        <div class="article-card-tag"><span class="tag">Clarity</span></div>
+        <div class="article-card-title">Clarity Beats Motivation</div>
+        <p class="article-card-excerpt">High-performance teams rely on clear objectives rather than the fleeting spark of temporary inspiration.</p>
+        <div class="meta" style="margin-top: auto;">March 05, 2026 · 5 min read</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter-section reveal">
+    <div class="newsletter-inner">
+      <div class="newsletter-eyebrow">Join The Standard</div>
+      <h2 class="newsletter-h2">Leadership is built one standard at a time.</h2>
+      <p class="newsletter-body">One practical leadership lesson delivered to your inbox. No noise. No inspiration content. No selling.</p>
+      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+        <input type="email" class="newsletter-input" placeholder="Your email address" required>
+        <button type="submit" class="btn btn-accent">Subscribe</button>
+      </form>
+      <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+
+<!-- ============================================
+     PAGE: ARTICLE — STANDARDS ARE LOVE
+     ============================================ -->
+<div id="page-article-standards-are-love" class="page">
+  <div class="article-page">
+    <div class="article-header">
+      <div class="article-header-tag"><span class="tag">Discipline</span></div>
+      <h1 class="article-h1">Standards Are Love</h1>
+      <p class="article-deck">True leadership is not kindness in the absence of standards. It is the discipline to hold everyone — including yourself — to the highest possible expectation.</p>
+      <div class="article-meta-bar">
+        <span>The Daily Standard</span>
+        <span class="article-meta-dot">·</span>
+        <span>March 9, 2026</span>
+        <span class="article-meta-dot">·</span>
+        <span>6 min read</span>
+      </div>
+      <hr class="article-full-rule">
+    </div>
+    <div class="article-body">
+      <p>The first time you let something slide, you tell yourself it is mercy.</p>
+      <p>A missed deadline. A number that came in short. A team member who didn't follow the process but got close enough. You look the other way. You say nothing. You think you are being kind.</p>
+      <p>You are not being kind. You are beginning the slow destruction of your team's standards — and you are doing it in the name of a feeling.</p>
+
+      <h2>What Standards Actually Are</h2>
+      <p>A standard is not a rule. Rules are enforced from the outside. Standards are held from the inside. A rule says: do this or face a consequence. A standard says: this is who we are, and anything less is not us.</p>
+      <p>When a leader holds a high standard, they are making a declaration about what the team is worth. They are saying: you are capable of more than average, and I refuse to pretend otherwise.</p>
+
+      <div class="pullquote">
+        <p>"The most loving thing a leader can do is refuse to let their team be average."</p>
+      </div>
+
+      <p>That is not harshness. That is the deepest form of respect available in a professional relationship.</p>
+      <p>The opposite — accepting less, tolerating drift, looking the other way when the standard slips — communicates something very different. It says: I don't believe you can do better. I don't think it's worth the conversation. I'll take what you give me.</p>
+      <p>That is not kindness. That is contempt dressed in patience.</p>
+
+      <h2>The Moment It Slips</h2>
+      <p>Every team has a moment. A week where the numbers fell short and no one addressed it. A behavior that crossed a line and the leader chose silence. A process that everyone quietly stopped following.</p>
+      <p>That moment is never dramatic. It rarely announces itself. It is a Tuesday afternoon decision — to say something or not, to hold the line or let it move.</p>
+      <p>What happens in that moment determines the culture far more than any values statement, team meeting, or motivational push will ever repair.</p>
+      <p>Because culture is not what you announce. It is what you allow. And once you allow something once, you have made a policy.</p>
+
+      <h2>What High Standards Require</h2>
+      <p>Holding standards consistently is harder than letting them slip. It requires the leader to have the conversation when the conversation is uncomfortable. To address the behavior when the easier path is to wait and see. To say clearly: this is not what we do here — and mean it every time, for everyone, without exception.</p>
+      <p>That last part is the test. Without exception.</p>
+
+      <div class="pullquote">
+        <p>"Standards are only real when they apply to everyone in the room — including the person running it."</p>
+      </div>
+
+      <p>The leader who holds the standard for some people and not others has not held the standard. They have created a tiered system of expectations, and the team can see every tier clearly. Those without the standard will expand into the space you give them. Those being held to it will resent the inconsistency. Neither outcome serves the team.</p>
+
+      <h2>The Proof</h2>
+      <p>The teams that perform at the highest level are not the most motivated. They are the most clear. They know exactly what is expected. They know it will be enforced. They know there is no version of the job where the standard does not apply to them.</p>
+      <p>That clarity is a gift. Most people spend their entire careers in environments where the expectations shift, the accountability disappears when it's inconvenient, and the standard is whatever the leader feels like enforcing today.</p>
+      <p>A team that operates under a consistent, high, non-negotiable standard knows where they stand at all times. They are not guessing. They are not wondering. They are performing.</p>
+      <p>That performance is what the standard produces. And that performance is what the leader's willingness to hold the standard — without exception, without sentiment, without apology — makes possible.</p>
+      <p>That is the most loving thing a leader can do.</p>
+      <p>Refuse to let your team be average.</p>
+    </div>
+
+    <div class="article-footer">
+      <div class="read-next-label">Read Next</div>
+      <div class="read-next-grid">
+        <div class="read-next-card" onclick="showArticle('clarity-beats-motivation')">
+          <span class="tag">Clarity</span>
+          <div class="read-next-title">Clarity Beats Motivation</div>
+        </div>
+        <div class="read-next-card" onclick="showArticle('culture-is-what-you-tolerate')">
+          <span class="tag">Culture</span>
+          <div class="read-next-title">Culture Is What You Tolerate</div>
+        </div>
+      </div>
+
+      <div style="margin-top: var(--space-xl); border-top: 1px solid var(--color-rule); padding-top: var(--space-lg);">
+        <section class="newsletter-section" style="margin: 0; padding: var(--space-lg) 0 0;">
+          <div class="newsletter-inner" style="padding: 0;">
+            <div class="newsletter-eyebrow">Join The Standard</div>
+            <h2 class="newsletter-h2" style="font-size: clamp(24px, 3vw, 34px);">One leadership lesson. Every week.</h2>
+            <p class="newsletter-body">Practical, grounded, and applicable by Monday.</p>
+            <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+              <input type="email" class="newsletter-input" placeholder="Your email address" required>
+              <button type="submit" class="btn btn-accent">Subscribe</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: ARTICLE — CLARITY BEATS MOTIVATION
+     ============================================ -->
+<div id="page-article-clarity-beats-motivation" class="page">
+  <div class="article-page">
+    <div class="article-header">
+      <div class="article-header-tag"><span class="tag">Clarity</span></div>
+      <h1 class="article-h1">Clarity Beats Motivation</h1>
+      <p class="article-deck">Motivation is a weather pattern. Clarity is infrastructure. One you hope for. The other you build.</p>
+      <div class="article-meta-bar">
+        <span>The Daily Standard</span>
+        <span class="article-meta-dot">·</span>
+        <span>March 5, 2026</span>
+        <span class="article-meta-dot">·</span>
+        <span>5 min read</span>
+      </div>
+      <hr class="article-full-rule">
+    </div>
+    <div class="article-body">
+      <p>Before a team meeting, a manager spent 20 minutes crafting an inspiring speech. He talked about potential. He talked about what was possible. He talked about how talented the team was and how this was their moment.</p>
+      <p>The team listened. Some of them nodded. One or two wrote something down.</p>
+      <p>Three weeks later, the numbers were the same.</p>
+
+      <h2>The Motivation Trap</h2>
+      <p>Motivation is real. It exists. A well-delivered message from a leader who has credibility can produce a genuine, measurable response in a team's short-term output.</p>
+      <p>The keyword is short-term.</p>
+      <p>Motivation is a weather pattern. It moves in, it produces energy, and it dissipates. The team that was fired up on Friday morning is human again by Wednesday afternoon. The problems that existed before the meeting still exist. The habits that produced the low numbers are still intact. The confusion about priorities is still unresolved.</p>
+
+      <div class="pullquote">
+        <p>"Motivation treats the symptom. Clarity treats the cause."</p>
+      </div>
+
+      <h2>What Confusion Costs</h2>
+      <p>When a team member does not know exactly what is expected — not approximately, not generally, but exactly — they will make decisions based on their best guess. Sometimes those guesses align with what the leader wants. Often they don't.</p>
+      <p>Every gap between what the leader expects and what the team understands is a gap in performance. And that gap is the leader's fault, not the team's.</p>
+      <p>Confusion is a leadership failure. It is the result of expectations that were communicated loosely, or not at all, or in language that meant different things to different people. The team is not failing. The team is performing against a standard they were never clearly given.</p>
+
+      <h2>What Clarity Looks Like</h2>
+      <p>Clarity is not a motivational speech with specific bullet points at the end. It is the daily practice of making expectations unmistakable.</p>
+      <p>It means every person on the team can answer these three questions without hesitation:</p>
+      <p>What am I responsible for? How will I know if I'm doing it right? What happens if I don't?</p>
+
+      <div class="pullquote">
+        <p>"When those three questions have clear, consistent answers — enforced consistently — the team does not need motivation. They need execution."</p>
+      </div>
+
+      <h2>The Discipline of Clarity</h2>
+      <p>Providing clarity is harder than providing motivation. Motivation is a speech. Clarity is a system. It requires the leader to think precisely about expectations before communicating them. To check for understanding rather than assume it. To maintain consistency when it would be easier to make an exception.</p>
+      <p>That discipline — the daily, unglamorous work of making expectations unmistakable — is what high-performing teams are actually built on.</p>
+      <p>Not the speech on Friday morning.</p>
+      <p>The clarity that was already there when Monday arrived.</p>
+    </div>
+
+    <div class="article-footer">
+      <div class="read-next-label">Read Next</div>
+      <div class="read-next-grid">
+        <div class="read-next-card" onclick="showArticle('standards-are-love')">
+          <span class="tag">Discipline</span>
+          <div class="read-next-title">Standards Are Love</div>
+        </div>
+        <div class="read-next-card" onclick="showArticle('culture-is-what-you-tolerate')">
+          <span class="tag">Culture</span>
+          <div class="read-next-title">Culture Is What You Tolerate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: ARTICLE — CULTURE IS WHAT YOU TOLERATE
+     ============================================ -->
+<div id="page-article-culture-is-what-you-tolerate" class="page">
+  <div class="article-page">
+    <div class="article-header">
+      <div class="article-header-tag"><span class="tag">Culture</span></div>
+      <h1 class="article-h1">Culture Is What You Tolerate</h1>
+      <p class="article-deck">You do not build culture with values statements and team events. You build it, or you erode it, every time you decide what behavior to accept.</p>
+      <div class="article-meta-bar">
+        <span>The Daily Standard</span>
+        <span class="article-meta-dot">·</span>
+        <span>March 9, 2026</span>
+        <span class="article-meta-dot">·</span>
+        <span>5 min read</span>
+      </div>
+      <hr class="article-full-rule">
+    </div>
+    <div class="article-body">
+      <p>Every organization has a culture. Most leaders did not choose it.</p>
+      <p>They inherited it, or they allowed it to develop while they were focused on other things, or they created it accidentally through the pattern of their own decisions. The meetings they didn't address. The behavior they allowed to continue. The standard they let slip because the timing wasn't right.</p>
+      <p>Culture does not wait for a strategic planning session. It is being built constantly, by every decision the leader makes about what is acceptable.</p>
+
+      <h2>The Tolerance Policy</h2>
+      <p>There is a concept in organizational behavior that most experienced leaders understand intuitively, even if they have never named it:</p>
+
+      <div class="pullquote">
+        <p>"The floor of acceptable behavior in any organization is exactly at the level of the worst conduct the leader is willing to tolerate without consequence."</p>
+      </div>
+
+      <p>Not the stated values. Not the culture deck. Not the framed mission statement in the lobby. The actual floor — where culture lives in practice — is wherever the leader drew the last line and held it.</p>
+      <p>If a team member is consistently late and nothing is said, the culture now includes that lateness as acceptable. Every other team member observes the gap between the stated standard and the enforced standard — and adjusts their own behavior accordingly.</p>
+      <p>Every tolerance builds on the last one. The floor drops one decision at a time.</p>
+
+      <h2>Why Leaders Tolerate</h2>
+      <p>The reasons are understandable. The timing is bad. The person is otherwise strong. The leader does not want to damage a relationship. The problem might resolve itself. The conversation is difficult and the calendar is full.</p>
+      <p>These are real considerations. None of them change the consequence.</p>
+      <p>Every day a leader does not address a behavior that falls below the standard, they are making a policy decision. They are telling every person on the team — including the person exhibiting the behavior — that this is who we are now.</p>
+
+      <h2>What Accountability Is Not</h2>
+      <p>Accountability is not punishment. This is the most common misunderstanding that produces the most avoidance.</p>
+      <p>Accountability is the practice of ensuring that standards mean something. It is the mechanism by which the gap between expectation and behavior is closed. It does not require anger, dramatic consequences, or public confrontation.</p>
+
+      <div class="pullquote">
+        <p>"Done consistently, accountability is not adversarial. It is clarifying."</p>
+      </div>
+
+      <h2>The Culture You Want</h2>
+      <p>The culture you want is not built in a retreat or a values exercise. It is built in the moment you address the behavior that falls short, when it would have been easier not to.</p>
+      <p>Done consistently, those decisions accumulate. The team learns what the standard actually is — not what it says on the wall, but what the leader is willing to enforce. They calibrate to that standard. They begin to hold each other to it.</p>
+      <p>That is culture. Not the version you described. The version you built through every decision about what you were willing to accept.</p>
+      <p>The question is never whether you have a culture. The question is whether you chose it.</p>
+    </div>
+
+    <div class="article-footer">
+      <div class="read-next-label">Read Next</div>
+      <div class="read-next-grid">
+        <div class="read-next-card" onclick="showArticle('standards-are-love')">
+          <span class="tag">Discipline</span>
+          <div class="read-next-title">Standards Are Love</div>
+        </div>
+        <div class="read-next-card" onclick="showArticle('clarity-beats-motivation')">
+          <span class="tag">Clarity</span>
+          <div class="read-next-title">Clarity Beats Motivation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: START HERE
+     ============================================ -->
+<div id="page-start-here" class="page">
+  <div class="start-here-page">
+    <div class="start-hero">
+      <div class="eyebrow" style="margin-bottom: var(--space-md);">Begin Here</div>
+      <h1>Start<br>Here.</h1>
+      <p class="hero-sub" style="margin-top: var(--space-md);">If you found this publication, you're probably already asking the right questions.</p>
+    </div>
+
+    <div class="start-section reveal">
+      <h2>What This Is</h2>
+      <p>The Daily Standard is a leadership journal built around a single premise: great teams are not built on motivation. They are built on standards.</p>
+      <p>This is not a coaching program. Not a personal development platform. Not a collection of frameworks with clever acronyms. It is a library of hard-won lessons from someone who has managed real teams in real pressure environments — written down so they don't disappear.</p>
+      <p>The writing here came from years of leading large-scale automotive operations. Teams of 40+ people. Monthly targets, manufacturer scorecards, CSI rankings — all of them running simultaneously, all of them visible to ownership the moment they slip. That environment doesn't grade on a curve. It taught a version of leadership that inspiration cannot teach.</p>
+    </div>
+
+    <div class="start-section reveal">
+      <h2>What You'll Find Here</h2>
+      <p><strong>Discipline</strong> — Consistent standards enforced without exception. The unglamorous, daily work that separates high-performing teams from ones that coast.</p>
+      <p><strong>Clarity</strong> — Expectations so clear they cannot be misunderstood. Because confusion is a leadership failure, not a team failure.</p>
+      <p><strong>Culture</strong> — The real kind. Built not through posters and retreats but through every decision the leader makes about what behavior is acceptable.</p>
+      <p><strong>Accountability</strong> — Not punishment. The practice of ensuring that standards actually mean something when Monday arrives.</p>
+    </div>
+
+    <div class="starter-articles reveal">
+      <h2>Start With These Three</h2>
+      <div class="starter-grid">
+        <div class="starter-card" onclick="showArticle('standards-are-love')">
+          <div class="starter-num">01</div>
+          <div class="starter-title">Standards Are Love</div>
+          <p class="starter-desc">Why holding people to a high standard is the most respectful thing a leader can do. Start here.</p>
+          <span class="text-link">Read Article →</span>
+        </div>
+        <div class="starter-card" onclick="showArticle('clarity-beats-motivation')">
+          <div class="starter-num">02</div>
+          <div class="starter-title">Clarity Beats Motivation</div>
+          <p class="starter-desc">Motivation is temporary. Clear expectations are permanent. The difference costs you every month.</p>
+          <span class="text-link">Read Article →</span>
+        </div>
+        <div class="starter-card" onclick="showArticle('culture-is-what-you-tolerate')">
+          <div class="starter-num">03</div>
+          <div class="starter-title">Culture Is What You Tolerate</div>
+          <p class="starter-desc">You don't build culture with posters and pizza parties. You build it with every decision about what behavior you accept.</p>
+          <span class="text-link">Read Article →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="start-section reveal">
+      <h2>After Those Three</h2>
+      <p>Head to the <span class="text-link" onclick="showPage('blog')">Blog</span> for the full archive. Every article is organized by pillar — Discipline, Clarity, Culture, Leadership, Team Building, and Mindset.</p>
+      <p>If you want one lesson per week delivered to your inbox, the newsletter is below. No noise. No selling. One standard at a time.</p>
+    </div>
+
+    <section class="newsletter-section" style="margin-top: var(--space-lg);">
+      <div class="newsletter-inner">
+        <div class="newsletter-eyebrow">Join The Standard</div>
+        <h2 class="newsletter-h2">Leadership is built one standard at a time.</h2>
+        <p class="newsletter-body">One practical leadership lesson delivered to your inbox each week.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <input type="email" class="newsletter-input" placeholder="Your email address" required>
+          <button type="submit" class="btn btn-accent">Subscribe</button>
+        </form>
+        <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: ABOUT
+     ============================================ -->
+<div id="page-about" class="page">
+  <div class="about-page">
+    <div class="about-hero">
+      <div class="eyebrow" style="margin-bottom: var(--space-md);">The Publication</div>
+      <h1>About<br>This<br>Publication.</h1>
+    </div>
+
+    <div class="about-section reveal">
+      <h2>Where This Comes From</h2>
+      <p>The lessons in The Daily Standard were not written in a classroom.</p>
+      <p>They came from leading high-volume automotive operations — managing teams of 40+ people across sales, finance, and service, accountable to monthly gross targets, manufacturer scorecards, and CSI rankings simultaneously. Environments where a single bad week is visible to ownership, manufacturers, and the entire team at once.</p>
+      <p>In that world, clarity is not a virtue. It is the difference between a team that knows what is expected and a team that guesses. Discipline is not a management style. It is the only reason standards survive contact with a bad month. Culture is not a values poster. It is whatever behavior you let slide last Tuesday.</p>
+      <p>Those are not theories. They are things learned by getting them wrong first.</p>
+    </div>
+
+    <div class="about-section reveal">
+      <h2>Why It Applies Everywhere</h2>
+      <p>The automotive industry is a useful laboratory for leadership because the feedback is immediate and the margin for error is thin. A dropped standard shows up in the numbers within 30 days. There is nowhere to hide and no quarter where you can coast.</p>
+      <p>But the principles that work in that environment work in any environment where humans are expected to perform together under pressure. A restaurant kitchen on a Saturday night. A construction crew behind schedule. A hospital floor short-staffed. The variables change. The leadership requirements do not.</p>
+      <p>The Daily Standard exists to translate front-line lessons into frameworks anyone can use — whether you are leading a large-scale business, managing a small team, or simply trying to hold a higher standard in your own work.</p>
+    </div>
+
+    <div class="about-section reveal">
+      <h2>Why This, and Not Others</h2>
+      <p>Farnam Street teaches you how to think. Ryan Holiday teaches you stoicism. Harvard Business Review teaches you frameworks. The Daily Standard teaches you what to do on Monday morning when your team is off-standard and you're the only one who can fix it.</p>
+      <p>The difference is operational specificity. This publication was written by someone who has stood on a sales floor at month-end with a team that hadn't hit number, and had to make a decision — not write about one. That gap between theory and consequence is where The Daily Standard lives.</p>
+    </div>
+
+    <div class="about-section reveal">
+      <h2>What You Will Never Find Here</h2>
+      <p>No seven-step frameworks with acronyms. No motivational quotes designed to be screenshot and shared. No advice that has never survived contact with an actual team. Nothing written to sound impressive rather than be useful.</p>
+      <p>Every piece of writing on this site is tested against one question: would this actually work on a real team, with real people, under real pressure? If the answer is not clearly yes, it does not get published.</p>
+    </div>
+
+    <div class="about-section reveal">
+      <h2>Connect</h2>
+      <p>Questions, topic suggestions, or a leadership problem worth writing about — <span class="text-link" onclick="showPage('contact')">reach out directly</span>. Response time is within 48 hours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: BLOG
+     ============================================ -->
+<div id="page-blog" class="page">
+  <div class="blog-page">
+    <div class="blog-hero">
+      <div class="eyebrow" style="margin-bottom: var(--space-sm);">All Articles</div>
+      <h1>The Archive.</h1>
+      <p class="blog-hero-sub">Leadership writing organized by discipline, clarity, culture, and accountability.</p>
+    </div>
+
+    <div class="blog-layout">
+      <div>
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-btn active" onclick="filterBlog('All')">All</button>
+          <button class="filter-btn" onclick="filterBlog('Discipline')">Discipline</button>
+          <button class="filter-btn" onclick="filterBlog('Clarity')">Clarity</button>
+          <button class="filter-btn" onclick="filterBlog('Culture')">Culture</button>
+          <button class="filter-btn" onclick="filterBlog('Leadership')">Leadership</button>
+          <button class="filter-btn" onclick="filterBlog('Team Building')">Team Building</button>
+          <button class="filter-btn" onclick="filterBlog('Mindset')">Mindset</button>
+        </div>
+
+        <div id="articleList">
+          <div class="article-entry" data-category="Culture" onclick="showArticle('culture-is-what-you-tolerate')">
+            <div class="article-entry-meta">
+              <span class="tag">Culture</span>
+              <span class="meta">March 09, 2026 · 5 min</span>
+            </div>
+            <div class="article-entry-title">Culture Is What You Tolerate</div>
+            <p class="article-entry-excerpt">The culture of any organization is defined by the worst behavior the leader is willing to accept without consequence. Every tolerance builds on the last one.</p>
+          </div>
+          <div class="article-entry" data-category="Discipline" onclick="showPage('blog')">
+            <div class="article-entry-meta">
+              <span class="tag">Discipline</span>
+              <span class="meta">March 07, 2026 · 4 min</span>
+            </div>
+            <div class="article-entry-title">Hope Is Not a Strategy</div>
+            <p class="article-entry-excerpt">Successful results are the product of rigorous discipline and proven systems, not wishful thinking or luck. The leader who waits to see is already behind.</p>
+          </div>
+          <div class="article-entry" data-category="Clarity" onclick="showArticle('clarity-beats-motivation')">
+            <div class="article-entry-meta">
+              <span class="tag">Clarity</span>
+              <span class="meta">March 05, 2026 · 5 min</span>
+            </div>
+            <div class="article-entry-title">Clarity Beats Motivation</div>
+            <p class="article-entry-excerpt">High-performance teams rely on clear objectives rather than the fleeting spark of temporary inspiration. Motivation dissipates. Clarity compounds.</p>
+          </div>
+          <div class="article-entry" data-category="Leadership" onclick="showPage('blog')">
+            <div class="article-entry-meta">
+              <span class="tag">Leadership</span>
+              <span class="meta">March 03, 2026 · 4 min</span>
+            </div>
+            <div class="article-entry-title">Calm Authority Beats Loud Authority</div>
+            <p class="article-entry-excerpt">Influence is anchored in steady presence and consistent accountability, not through noise or forceful leadership. The room reads the leader's energy first.</p>
+          </div>
+          <div class="article-entry" data-category="Discipline" onclick="showArticle('standards-are-love')">
+            <div class="article-entry-meta">
+              <span class="tag">Discipline</span>
+              <span class="meta">March 01, 2026 · 6 min</span>
+            </div>
+            <div class="article-entry-title">Standards Are Love</div>
+            <p class="article-entry-excerpt">True leadership is demonstrated through the commitment to hold everyone to the highest possible standard of excellence. Refusing to let your team be average is a form of respect.</p>
+          </div>
+          <div class="article-entry" data-category="Team Building" onclick="showPage('blog')">
+            <div class="article-entry-meta">
+              <span class="tag">Team Building</span>
+              <span class="meta">Feb 27, 2026 · 5 min</span>
+            </div>
+            <div class="article-entry-title">The First 90 Days Sets Everything</div>
+            <p class="article-entry-excerpt">What a leader allows in the first 90 days becomes the baseline the team uses to judge everything that follows. The window to establish standards is shorter than most leaders realize.</p>
+          </div>
+          <div class="article-entry" data-category="Mindset" onclick="showPage('blog')">
+            <div class="article-entry-meta">
+              <span class="tag">Mindset</span>
+              <span class="meta">Feb 24, 2026 · 4 min</span>
+            </div>
+            <div class="article-entry-title">The Leader Nobody Wants to Disappoint</div>
+            <p class="article-entry-excerpt">The most effective leaders are not feared. They are respected. The team's motivation shifts from avoiding consequences to not wanting to let the leader down.</p>
+          </div>
+          <div class="article-entry" data-category="Culture" onclick="showPage('blog')">
+            <div class="article-entry-meta">
+              <span class="tag">Culture</span>
+              <span class="meta">Feb 21, 2026 · 6 min</span>
+            </div>
+            <div class="article-entry-title">What Gets Rewarded Gets Repeated</div>
+            <p class="article-entry-excerpt">Culture is shaped as much by what the leader celebrates as by what they correct. What you recognize publicly defines what the team believes is worth pursuing.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="blog-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">Popular Articles</div>
+          <ul class="sidebar-links">
+            <li><a onclick="showArticle('standards-are-love')">Standards Are Love</a></li>
+            <li><a onclick="showArticle('clarity-beats-motivation')">Clarity Beats Motivation</a></li>
+            <li><a onclick="showArticle('culture-is-what-you-tolerate')">Culture Is What You Tolerate</a></li>
+            <li><a onclick="showPage('blog')">Calm Authority Beats Loud Authority</a></li>
+            <li><a onclick="showPage('blog')">Hope Is Not a Strategy</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">Browse by Pillar</div>
+          <ul class="sidebar-links">
+            <li><a onclick="filterBlog('Discipline')">Discipline</a></li>
+            <li><a onclick="filterBlog('Clarity')">Clarity</a></li>
+            <li><a onclick="filterBlog('Culture')">Culture</a></li>
+            <li><a onclick="filterBlog('Leadership')">Accountability & Leadership</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-newsletter">
+          <div class="sidebar-newsletter-h">Join The Standard</div>
+          <p>One leadership lesson per week. No noise.</p>
+          <input type="email" class="sidebar-newsletter-input" placeholder="Your email">
+          <button class="btn btn-filled" style="width:100%; font-size:12px; padding: 12px;">Subscribe</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PAGE: CONTACT
+     ============================================ -->
+<div id="page-contact" class="page">
+  <div class="contact-page">
+    <div class="contact-hero">
+      <div class="eyebrow" style="margin-bottom: var(--space-md);">Get in Touch</div>
+      <h1>Contact.</h1>
+      <p>If you have a question, a topic you'd like to see covered, or a leadership problem worth writing about — reach out directly.</p>
+    </div>
+
+    <div class="contact-form-wrap reveal">
+      <div id="contactForm">
+        <div class="form-group">
+          <label class="form-label" for="contactName">Name</label>
+          <input type="text" id="contactName" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactEmail">Email</label>
+          <input type="email" id="contactEmail" class="form-input" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactSubject">Subject</label>
+          <input type="text" id="contactSubject" class="form-input" placeholder="What's on your mind?">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactMessage">Message</label>
+          <textarea id="contactMessage" class="form-textarea" placeholder="Your message..."></textarea>
+        </div>
+        <!-- Honeypot -->
+        <input type="text" name="_honey" style="display:none" tabindex="-1">
+        <button type="button" class="btn btn-filled" onclick="handleContact()" style="margin-top: var(--space-sm);">Send Message</button>
+        <p class="form-fine" style="margin-top: var(--space-md);">Response time: within 48 hours. For speaking or consulting inquiries, use the same form.</p>
+      </div>
+      <div class="form-success" id="contactSuccess">
+        Received. You'll hear back within 48 hours.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">The Daily Standard</div>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('start-here')">Start Here</a></li>
+      <li><a onclick="showPage('blog')">Blog</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 The Daily Standard. Leadership through discipline and standards.</div>
+  </div>
+</footer>
+
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+// ── Scroll nav behavior ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+});
+
+// ── Mobile menu ──
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── SPA Page Routing ──
+function showPage(pageName) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('page-' + pageName);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Update nav active state
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('data-page') === pageName);
+  });
+  // Re-run reveal animations
+  setTimeout(initReveal, 100);
+}
+
+function showArticle(slug) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-article-' + slug);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Clear active nav
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  setTimeout(initReveal, 100);
+}
+
+// ── Blog filter ──
+function filterBlog(category) {
+  // Navigate to blog page first
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-blog').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Update filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === category || (category === 'All' && btn.textContent.trim() === 'All'));
+  });
+
+  // Filter articles
+  const entries = document.querySelectorAll('.article-entry');
+  entries.forEach(entry => {
+    if (category === 'All' || entry.dataset.category === category) {
+      entry.style.display = '';
+    } else {
+      entry.style.display = 'none';
+    }
+  });
+
+  setTimeout(initReveal, 100);
+}
+
+// ── Scroll Reveal ──
+function initReveal() {
+  const reveals = document.querySelectorAll('.page.active .reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => {
+    el.classList.remove('visible');
+    observer.observe(el);
+  });
+}
+
+// ── Newsletter ──
+function handleNewsletter(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  btn.textContent = 'Subscribed ✓';
+  btn.disabled = true;
+  btn.style.background = '#2a6e2a';
+  form.querySelector('input').disabled = true;
+}
+
+// ── Contact form ──
+function handleContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  if (!name || !email) {
+    alert('Please fill in your name and email.');
+    return;
+  }
+  document.getElementById('contactForm').style.display = 'none';
+  const success = document.getElementById('contactSuccess');
+  success.style.display = 'block';
+}
+
+// ── Init on load ──
+document.addEventListener('DOMContentLoaded', () => {
+  initReveal();
+  // Hero stagger is CSS animation — no JS needed
+});
+</script>
+
+</body>
+</html>

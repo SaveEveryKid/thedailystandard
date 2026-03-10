@@ -690,17 +690,45 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;o
       <h1>Contact.</h1>
       <p>A question, a topic worth covering, or a leadership problem that needs a second opinion. Reach out directly.</p>
     </div>
+
     <div class="cf rev">
-      <div id="cform">
-        <div class="fg"><label class="fl" for="cname">Name</label><input type="text" id="cname" class="fi" placeholder="Your name"></div>
-        <div class="fg"><label class="fl" for="cemail">Email</label><input type="email" id="cemail" class="fi" placeholder="your@email.com"></div>
-        <div class="fg"><label class="fl" for="csubj">Subject</label><input type="text" id="csubj" class="fi" placeholder="What's on your mind?"></div>
-        <div class="fg"><label class="fl" for="cmsg">Message</label><textarea id="cmsg" class="fta" placeholder="Your message..."></textarea></div>
+      <form id="cform" action="https://formspree.io/f/mojkekaa" method="POST">
+        
+        <div class="fg">
+          <label class="fl" for="cname">Name</label>
+          <input type="text" id="cname" name="name" class="fi" placeholder="Your name" required>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="cemail">Email</label>
+          <input type="email" id="cemail" name="email" class="fi" placeholder="your@email.com" required>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="csubj">Subject</label>
+          <input type="text" id="csubj" name="subject" class="fi" placeholder="What's on your mind?">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="cmsg">Message</label>
+          <textarea id="cmsg" name="message" class="fta" placeholder="Your message..." required></textarea>
+        </div>
+
+        <!-- spam honeypot -->
         <input type="text" name="_h" style="display:none" tabindex="-1">
-        <button type="button" class="btn bf" onclick="doContact()" style="margin-top:8px">Send Message</button>
-        <p class="f-fine" style="margin-top:16px">Response time: within 48 hours. Speaking or consulting inquiries welcome.</p>
-      </div>
-      <div class="f-ok" id="cok">Received. You'll hear back within 48 hours.</div>
+
+        <!-- success redirect (optional) -->
+        <input type="hidden" name="_subject" value="New Contact Form Submission">
+
+        <button type="submit" class="btn bf" style="margin-top:8px">
+          Send Message
+        </button>
+
+        <p class="f-fine" style="margin-top:16px">
+          Response time: within 48 hours. Speaking or consulting inquiries welcome.
+        </p>
+
+      </form>
     </div>
   </div>
 </div>
@@ -1112,20 +1140,85 @@ function initCounters(){
 /* ═══════════════════════════════════════════
    NEWSLETTER / CONTACT
 ═══════════════════════════════════════════ */
-function doNL(e){
+
+const FORM_ENDPOINT = "https://formspree.io/f/mojkekaa";
+
+/* Newsletter */
+async function doNL(e){
   e.preventDefault();
-  const b=e.target.querySelector('button');
-  b.textContent='Subscribed ✓';b.disabled=true;b.style.background='#1a5c1a';
-  e.target.querySelector('input').disabled=true;
-}
-function doContact(){
-  const n=document.getElementById('cname').value.trim();
-  const em=document.getElementById('cemail').value.trim();
-  if(!n||!em){toast('Please fill in your name and email.');return}
-  document.getElementById('cform').style.display='none';
-  document.getElementById('cok').style.display='block';
+
+  const form = e.target;
+  const email = form.querySelector("input").value.trim();
+
+  if(!email){
+    toast("Enter your email first.");
+    return;
+  }
+
+  const button = form.querySelector("button");
+
+  try{
+    await fetch(FORM_ENDPOINT,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify({
+        type:"newsletter",
+        email:email
+      })
+    });
+
+    button.textContent="Subscribed ✓";
+    button.disabled=true;
+    button.style.background="#1a5c1a";
+
+    form.querySelector("input").disabled=true;
+
+  }catch(err){
+    toast("Something went wrong. Try again.");
+  }
 }
 
+
+/* Contact Form */
+async function doContact(){
+
+  const name = document.getElementById("cname").value.trim();
+  const email = document.getElementById("cemail").value.trim();
+  const subject = document.getElementById("csubj").value.trim();
+  const message = document.getElementById("cmsg").value.trim();
+
+  if(!name || !email){
+    toast("Please fill in your name and email.");
+    return;
+  }
+
+  try{
+
+    await fetch(FORM_ENDPOINT,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        subject:subject,
+        message:message
+      })
+    });
+
+    document.getElementById("cform").style.display="none";
+    document.getElementById("cok").style.display="block";
+
+  }catch(err){
+    toast("Submission failed. Please try again.");
+  }
+
+}
 /* ═══════════════════════════════════════════
    COPY / TOAST
 ═══════════════════════════════════════════ */

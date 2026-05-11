@@ -491,6 +491,100 @@
   .map-panel{padding:1.5rem;animation:fade .4s ease}
   @media(min-width:768px){.map-panel{padding:2rem}}
 
+  /* ---- The Case (skeptics' Q&A) ---- */
+  .case-intro{padding:1.5rem 1.75rem;border:1px solid rgba(176,139,62,.18);border-radius:.6rem;background:rgba(11,13,16,.5);margin-bottom:1.5rem}
+  .case-intro p{font-size:.93rem;color:rgba(231,225,210,.78);line-height:1.65;margin:0}
+  .case-cat-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+  .case-cat-tab{padding:.42rem 1rem;border-radius:9999px;border:1px solid rgba(176,139,62,.22);background:rgba(11,13,16,.5);color:rgba(185,172,144,.75);font-size:.82rem;letter-spacing:.04em;cursor:pointer;font-family:var(--sans);transition:all .15s}
+  .case-cat-tab:hover{border-color:rgba(205,174,95,.45);color:var(--gold-200)}
+  .case-cat-tab.active{background:rgba(205,174,95,.15);border-color:rgba(205,174,95,.6);color:var(--gold-light)}
+  .case-list{display:flex;flex-direction:column;gap:.85rem}
+  .case-card{
+    border:1px solid rgba(176,139,62,.18);
+    border-radius:.6rem;
+    background:rgba(11,13,16,.5);
+    overflow:hidden;
+    transition:border-color .2s
+  }
+  .case-card:hover{border-color:rgba(176,139,62,.35)}
+  .case-card.open{border-color:rgba(205,174,95,.5);background:rgba(11,13,16,.7)}
+  .case-card-head{
+    display:flex;gap:1rem;align-items:flex-start;
+    padding:1.1rem 1.4rem;
+    cursor:pointer;
+    user-select:none;
+    text-align:left;
+    width:100%;
+    background:none;border:none;
+    font-family:var(--sans);
+    color:inherit
+  }
+  .case-card-marker{
+    width:6px;border-radius:3px;flex-shrink:0;align-self:stretch;
+    margin-top:.15rem;margin-bottom:.15rem
+  }
+  .case-card-text{flex:1;min-width:0}
+  .case-card-cat{
+    font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(185,172,144,.6);margin-bottom:.4rem;font-weight:500
+  }
+  .case-card-q{
+    font-family:var(--serif);
+    font-size:1.2rem;color:var(--stone-50);
+    line-height:1.35;margin:0 0 .4rem;font-weight:500
+  }
+  .case-card-short{
+    font-size:.9rem;color:rgba(231,225,210,.72);
+    font-style:italic;line-height:1.5;margin:0
+  }
+  .case-card-toggle{
+    flex-shrink:0;align-self:center;
+    color:rgba(185,172,144,.5);
+    font-size:1.2rem;line-height:1;
+    transition:transform .2s
+  }
+  .case-card.open .case-card-toggle{transform:rotate(45deg);color:var(--gold-300)}
+  .case-card-body{
+    padding:0 1.4rem 1.5rem;
+    animation:fade .25s ease;
+    color:rgba(231,225,210,.85)
+  }
+  .case-card-body p{font-size:.95rem;line-height:1.7;margin:0 0 1rem}
+  .case-card-section{
+    margin-top:1.25rem;padding-top:1rem;
+    border-top:1px solid rgba(176,139,62,.12)
+  }
+  .case-card-section-label{
+    font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(205,174,95,.6);margin-bottom:.65rem;font-weight:600
+  }
+  .case-source-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.55rem}
+  .case-source-item{
+    padding-left:1rem;border-left:2px solid rgba(176,139,62,.25);
+    line-height:1.5;font-size:.85rem;color:rgba(231,225,210,.75)
+  }
+  .case-source-label{color:var(--gold-200);font-weight:500;display:block;margin-bottom:.15rem;font-size:.83rem}
+  .case-source-note{color:rgba(185,172,144,.7);font-size:.8rem;font-style:italic}
+  .case-script-row{display:flex;gap:.5rem;flex-wrap:wrap}
+  .case-script-chip{
+    display:inline-block;padding:.32rem .85rem;
+    font-size:.78rem;letter-spacing:.04em;
+    border:1px solid rgba(176,139,62,.3);
+    border-radius:9999px;
+    background:rgba(11,13,16,.5);
+    color:var(--gold-300);
+    text-decoration:none;
+    transition:all .15s
+  }
+  .case-script-chip:hover{background:rgba(176,139,62,.15);border-color:rgba(205,174,95,.6);color:var(--gold-light)}
+  .case-disclaimer{
+    margin-top:2rem;padding:1rem 1.25rem;
+    border:1px dashed rgba(176,139,62,.2);
+    border-radius:.5rem;
+    font-size:.78rem;color:rgba(185,172,144,.55);
+    line-height:1.6;font-style:italic
+  }
+
   /* Reader context strip — era + journey waypoints surfaced at top of reader card */
   .reader-context-strip{
     padding:.85rem 1.25rem;
@@ -2724,6 +2818,360 @@ const JOURNEYS=[
 function getJourney(id){return JOURNEYS.find(j=>j.id===id)}
 
 /* ============================================================
+   THE CASE — hard questions, honest answers
+   For seekers, skeptics, and anyone willing to ask.
+   Each entry has a category, a real question, a short answer,
+   a longer body, and where possible, real historical sources.
+============================================================ */
+const CASE_CATEGORIES=[
+  {id:"jesus",label:"The Person of Jesus",color:"#cdae5f"},
+  {id:"resurrection",label:"The Resurrection",color:"#e8c46a"},
+  {id:"bible",label:"The Bible",color:"#9ec98e"},
+  {id:"reason",label:"God & Reason",color:"#7eb9d8"},
+  {id:"suffering",label:"Suffering & Evil",color:"#c47fc4"},
+  {id:"faiths",label:"Other Faiths",color:"#f1a87e"},
+  {id:"church",label:"The Church",color:"#a8a8b8"}
+];
+
+const CASE_QUESTIONS=[
+  // ── The Person of Jesus ───────────────────────────────────────────────────
+  {
+    id:"did-jesus-exist",
+    cat:"jesus",
+    q:"Did Jesus of Nazareth actually exist?",
+    short:"Yes — and even non-Christian sources confirm it.",
+    body:[
+      "Most contemporary historians, including non-Christians, accept Jesus's historicity. The evidence comes from multiple independent attestations within decades of his life — including from writers with no Christian agenda.",
+      "Tacitus, the Roman senator and historian (c. AD 116, Annals 15.44), refers to \"Christus\" who \"suffered the extreme penalty during the reign of Tiberius at the hands of one of our procurators, Pontius Pilatus.\" Josephus, the Jewish historian writing c. AD 93, mentions Jesus twice — including a brief, undisputed reference to \"James, the brother of Jesus, who was called the Christ\" (Antiquities 20.9.1). Pliny the Younger, writing to Emperor Trajan c. AD 112, describes early Christians worshiping Christ \"as to a god.\" The Babylonian Talmud, hostile to Christianity, also mentions him.",
+      "Bart Ehrman — an agnostic and one of the world's leading critical New Testament scholars — puts it bluntly: \"He certainly existed, as virtually every competent scholar of antiquity, Christian or non-Christian, agrees.\" What's contested is not whether Jesus existed, but who he was."
+    ],
+    sources:[
+      {label:"Tacitus, Annals 15.44 (c. AD 116)",note:"Roman historian on the execution of Christ under Pilate"},
+      {label:"Josephus, Antiquities 20.9.1 (c. AD 93)",note:"Jewish historian — undisputed reference to Jesus's brother James"},
+      {label:"Pliny the Younger, Letters 10.96 (c. AD 112)",note:"Roman governor describing Christian worship of Christ"},
+      {label:"Bart D. Ehrman, Did Jesus Exist? (2012)",note:"Skeptical NT scholar's case for Jesus's historicity"}
+    ],
+    scriptures:[{book:"LUK",ch:1,verses:[1,4]},{book:"1CO",ch:15,verses:[3,8]}]
+  },
+  {
+    id:"jesus-claim-god",
+    cat:"jesus",
+    q:"Did Jesus actually claim to be God?",
+    short:"Repeatedly — and his contemporaries understood exactly what he was claiming.",
+    body:[
+      "The claim that Jesus never said \"I am God\" is technically true but theologically misleading. He made the claim in language a first-century Jew would have understood as far more provocative than a direct assertion.",
+      "In John 8:58 he says, \"Before Abraham was, I am\" — invoking the divine name from Exodus 3:14. His listeners immediately pick up stones to kill him for blasphemy. In John 10:30 he says, \"I and the Father are one,\" and again they reach for stones. In Mark 2 he forgives sins, drawing the response: \"Who can forgive sins but God alone?\" Before the Sanhedrin in Mark 14:62, asked if he is \"the Christ, the Son of the Blessed,\" he answers: \"I am, and you will see the Son of Man seated at the right hand of Power, and coming with the clouds of heaven\" — a direct claim to the divine figure of Daniel 7. The high priest tears his robes.",
+      "Jesus also accepts worship (Matthew 14:33; John 20:28), forgives sins on his own authority, and claims to be the final judge of humanity (Matthew 25:31-46) — a role uniquely God's in Jewish thought. Every one of these is a divine prerogative."
+    ],
+    sources:[
+      {label:"Richard Bauckham, Jesus and the God of Israel (2008)",note:"Survey of Jesus's divine identity in NT"},
+      {label:"N.T. Wright, Simply Christian (2006)",note:"Modern statement of the case"},
+      {label:"Larry Hurtado, Lord Jesus Christ (2003)",note:"Earliest devotion to Jesus as divine"}
+    ],
+    scriptures:[{book:"JHN",ch:8,verses:[58,59]},{book:"JHN",ch:10,verses:[30,33]},{book:"MRK",ch:14,verses:[61,64]},{book:"JHN",ch:20,verses:[28]}]
+  },
+  {
+    id:"liar-lunatic-lord",
+    cat:"jesus",
+    q:"Couldn't Jesus just have been a great moral teacher?",
+    short:"Not if you take his actual words seriously.",
+    body:[
+      "C.S. Lewis put it as well as anyone: \"A man who was merely a man and said the sort of things Jesus said would not be a great moral teacher. He would either be a lunatic — on a level with the man who says he is a poached egg — or else he would be the Devil of Hell. You must make your choice.\"",
+      "The \"good teacher\" reading requires editing Jesus down to the parts we like. The Sermon on the Mount and the parable of the Good Samaritan come from the same man who said \"I am the way, the truth, and the life. No one comes to the Father except through me\" (John 14:6); who claimed authority to forgive sins, judge the world, and stand in the place of God himself. You can't keep the ethics and discard the identity claims — the same Jesus made both.",
+      "If Jesus didn't believe what he said about himself, he was a deliberate fraud, manipulating people to their deaths for a lie. If he did believe it but was wrong, he was mentally ill. There's a fourth option Lewis didn't name explicitly: legend — that the gospels mythologized him. But the documents are too early, too multiply-attested, and contain too many embarrassing details to be straightforward invention."
+    ],
+    sources:[
+      {label:"C.S. Lewis, Mere Christianity (1952)",note:"Book II, chapter 3 — the classic statement of the trilemma"},
+      {label:"Josh McDowell, More Than a Carpenter (1977)",note:"Popular accessible treatment"}
+    ],
+    scriptures:[{book:"JHN",ch:14,verses:[6]},{book:"MAT",ch:7,verses:[28,29]}]
+  },
+  {
+    id:"fulfilled-prophecy",
+    cat:"jesus",
+    q:"Did the Old Testament really predict Jesus?",
+    short:"The pattern is striking — and some details are uncomfortably specific.",
+    body:[
+      "The Hebrew Scriptures contain dozens of passages that Christians read as pointing forward to Jesus. Some are highly specific: born in Bethlehem (Micah 5:2 → Matthew 2:1), from the line of David (2 Samuel 7:12-13), born of a virgin (Isaiah 7:14), pierced for our transgressions (Isaiah 53:5), hands and feet pierced (Psalm 22:16), lots cast for his garments (Psalm 22:18), buried with the rich (Isaiah 53:9).",
+      "The standard skeptical replies are: (1) the gospel writers invented details to fit prophecy; (2) the prophecies are vague enough to fit anyone; (3) Jesus deliberately staged events to fulfill them. Each runs into problems. Isaiah 53 is among the Dead Sea Scrolls (at least 150 BC) — its description of a suffering, pierced, rejected, vindicated servant predates Jesus by at least a century and a half, and predates crucifixion as a Roman penalty entirely. Psalm 22 describes execution by piercing of hands and feet in a way no one in David's day had any frame of reference for. Daniel 9's seventy-week prophecy points to the precise era of Messiah's appearance.",
+      "Individually, any one prophecy might be coincidence. Cumulatively, they remove the option of casual dismissal — they have to be either fabricated, fulfilled, or a remarkable run of luck."
+    ],
+    sources:[
+      {label:"Michael Rydelnik, The Messianic Hope (2010)",note:"Scholarly treatment of OT messianic texts"},
+      {label:"The Dead Sea Scrolls, Great Isaiah Scroll (c. 150 BC)",note:"Confirms pre-Christian text of Isaiah 53"},
+      {label:"Walter Kaiser, The Messiah in the Old Testament (1995)",note:"Survey of messianic prophecies"}
+    ],
+    scriptures:[{book:"ISA",ch:53,verses:[3,9]},{book:"PSA",ch:22,verses:[14,18]},{book:"MIC",ch:5,verses:[2]},{book:"DAN",ch:9,verses:[24,27]}]
+  },
+
+  // ── The Resurrection ──────────────────────────────────────────────────────
+  {
+    id:"resurrection-historical",
+    cat:"resurrection",
+    q:"Is there any historical case for the resurrection?",
+    short:"Yes — and most non-Christian scholars accept the underlying facts that demand explanation.",
+    body:[
+      "Historian Gary Habermas has surveyed thousands of academic publications on the resurrection and identifies a set of \"minimal facts\" that the overwhelming majority of scholars — Christian and non-Christian, including the most skeptical — accept as historical: (1) Jesus died by Roman crucifixion. (2) His tomb was discovered empty shortly after. (3) His disciples had experiences they believed were appearances of the risen Jesus. (4) The disciples were transformed from terrified hiders to bold proclaimers willing to die for this claim. (5) The skeptic James (Jesus's brother) and the persecutor Paul both converted because they believed they had encountered the risen Jesus.",
+      "The historical question isn't whether these facts happened — most scholars accept they did. The question is what explanation best accounts for all of them at once. \"They all hallucinated the same thing\" doesn't fit group dynamics. \"They stole the body\" doesn't explain why they'd then willingly die for a lie. \"He didn't really die\" doesn't survive medical scrutiny of Roman crucifixion. \"It's a legend\" doesn't fit the early creedal material in 1 Corinthians 15, which scholars date to within five years of the crucifixion.",
+      "N.T. Wright's massive scholarly volume *The Resurrection of the Son of God* concludes that the resurrection — physical, bodily, historical — is the only adequate explanation for the rise of Christianity from a movement that should have died with its leader."
+    ],
+    sources:[
+      {label:"N.T. Wright, The Resurrection of the Son of God (2003)",note:"Definitive 817-page scholarly case"},
+      {label:"Gary Habermas & Michael Licona, The Case for the Resurrection of Jesus (2004)",note:"Minimal facts approach"},
+      {label:"1 Corinthians 15:3-7",note:"Early Christian creed, dated by scholars to within 5 years of the crucifixion"}
+    ],
+    scriptures:[{book:"1CO",ch:15,verses:[3,8]},{book:"LUK",ch:24},{book:"JHN",ch:20}]
+  },
+  {
+    id:"hallucination-theory",
+    cat:"resurrection",
+    q:"Couldn't the disciples have just hallucinated?",
+    short:"Hallucinations don't work like that — and they don't leave empty tombs.",
+    body:[
+      "Hallucinations are private mental events. They don't occur to groups simultaneously, with everyone seeing and hearing the same things. The gospel accounts and 1 Corinthians 15 describe Jesus appearing to individuals, small groups, the eleven disciples, and on one occasion \"more than five hundred brothers at one time\" (1 Cor 15:6). Psychiatric literature has no parallel for group hallucinations of this scale and consistency.",
+      "More important, the hallucination theory doesn't explain the empty tomb. If the disciples merely had vivid grief-induced visions, the body would still have been in the tomb, and Jewish or Roman authorities could have produced it to stop the new movement in its tracks. They didn't — because they couldn't.",
+      "The theory also fails to account for the conversions of James (Jesus's skeptical brother, who didn't believe during Jesus's lifetime) and Paul (an active persecutor of Christians with every reason not to hallucinate Christ). Both were transformed by what they understood as appearances. Hallucinations don't happen to hostile witnesses on their way to arrest Christians."
+    ],
+    sources:[
+      {label:"Gary Habermas, \"Explaining Away Jesus' Resurrection: The Recent Revival of Hallucination Theories\"",note:"Christian Research Journal 23.4 (2001)"},
+      {label:"William Lane Craig, Reasonable Faith (2008)",note:"Chapter on the resurrection"}
+    ],
+    scriptures:[{book:"1CO",ch:15,verses:[5,8]},{book:"ACT",ch:9,verses:[1,9]},{book:"GAL",ch:1,verses:[13,16]}]
+  },
+  {
+    id:"swoon-theory",
+    cat:"resurrection",
+    q:"What if Jesus didn't really die on the cross?",
+    short:"Roman crucifixion was engineered to kill. He did.",
+    body:[
+      "The \"swoon theory\" — that Jesus survived the cross and revived in the tomb — has been almost entirely abandoned in serious scholarship. The reasons are medical and historical.",
+      "Roman crucifixion was a death penalty refined over centuries to be inescapable. Victims died of asphyxiation, blood loss, and shock. Before crucifixion, Jesus had been scourged — Roman flogging often killed prisoners outright. The Journal of the American Medical Association published a detailed medical analysis in 1986 concluding that the spear thrust to Jesus's side, producing \"blood and water\" (likely pericardial fluid mixed with blood), confirms his death from cardiac and pulmonary failure. The Roman soldiers, professionals who would be executed if a condemned man survived, certified him dead.",
+      "Even if Jesus had somehow survived — wrapped in seventy-five pounds of burial spices and linen, in a sealed tomb, bleeding from five wounds — he would have emerged as a desperately wounded man needing weeks of care, not as a triumphant figure convincing his disciples he had conquered death. The theory creates more historical problems than it solves."
+    ],
+    sources:[
+      {label:"W.D. Edwards et al., \"On the Physical Death of Jesus Christ,\" JAMA 255 (1986)",note:"Medical analysis in a peer-reviewed journal"},
+      {label:"David Strauss, A New Life of Jesus (1865)",note:"Skeptical 19th-century scholar who rejected the swoon theory as untenable"}
+    ],
+    scriptures:[{book:"JHN",ch:19,verses:[31,37]},{book:"MRK",ch:15,verses:[44,45]}]
+  },
+
+  // ── The Bible ─────────────────────────────────────────────────────────────
+  {
+    id:"bible-reliable",
+    cat:"bible",
+    q:"How do we know the New Testament is reliable?",
+    short:"It has more manuscript support than any other ancient document — by a long margin.",
+    body:[
+      "The New Testament is the best-attested document of the ancient world. We have over 5,800 Greek manuscripts, more than 10,000 Latin manuscripts, and around 9,300 in other languages — roughly 25,000 manuscript witnesses. The earliest fragments (like Papyrus 52, John's gospel) date to within 30-40 years of the originals.",
+      "Compare that to other classical works: Caesar's *Gallic Wars* survives in about 10 manuscripts, the earliest from around 1,000 years after Caesar wrote it. Tacitus survives in around 20 manuscripts. The Iliad has about 1,800 manuscripts. Yet no one questions whether we have substantially what these authors wrote.",
+      "The sheer number of NT manuscripts means we can cross-check and identify even tiny variations. Skeptical NT scholar Bart Ehrman acknowledges that the vast majority of textual variants are trivial — spelling differences, word order changes — and that no major Christian doctrine depends on a contested text. Bruce Metzger, the dean of textual criticism, concluded that the NT text is over 99% certain.",
+      "What we have now is, in substance, what was written in the first century."
+    ],
+    sources:[
+      {label:"Bruce Metzger & Bart Ehrman, The Text of the New Testament (4th ed., 2005)",note:"Standard textbook by leading scholars on both sides"},
+      {label:"Daniel Wallace, csntm.org (Center for the Study of NT Manuscripts)",note:"Ongoing manuscript discovery and digitization"},
+      {label:"F.F. Bruce, The New Testament Documents: Are They Reliable? (1943)",note:"Classic accessible treatment"}
+    ],
+    scriptures:[{book:"2TI",ch:3,verses:[16,17]},{book:"2PE",ch:1,verses:[16,21]}]
+  },
+  {
+    id:"contradictions",
+    cat:"bible",
+    q:"Aren't there contradictions in the Bible?",
+    short:"Most alleged contradictions are differences in perspective, not contradictions.",
+    body:[
+      "When four eyewitnesses describe the same car accident, they emphasize different details and may even appear to disagree about minor points — but those are signs of independent witness, not fabrication. If they agreed word-for-word, we'd suspect collusion.",
+      "The gospels have this signature. Matthew, Mark, Luke, and John each give us Jesus from a different angle and audience. Differences in the resurrection accounts (how many women came to the tomb, how many angels they saw) are exactly what we'd expect from independent witnesses describing a chaotic, transformative event. None contradicts at the level of fact: Jesus was crucified, buried, and his tomb was empty. Within that shared core, the details vary.",
+      "More substantive challenges — apparent disagreements between Paul and James on faith and works, harmonization issues between Kings and Chronicles, dating problems in Daniel — have been engaged seriously by scholars for two thousand years. Many turn out, on careful reading, to be complementary rather than contradictory. Some remain genuinely difficult. But difficulty isn't contradiction, and the Christian tradition has never claimed that every passage is easy."
+    ],
+    sources:[
+      {label:"Norman Geisler & Thomas Howe, The Big Book of Bible Difficulties (2008)",note:"Encyclopedia of alleged contradictions and proposed resolutions"},
+      {label:"Gleason Archer, New International Encyclopedia of Bible Difficulties (1982)",note:"Classic scholarly treatment"}
+    ],
+    scriptures:[{book:"2PE",ch:3,verses:[15,16]}]
+  },
+  {
+    id:"canon-formation",
+    cat:"bible",
+    q:"Who decided which books got into the Bible?",
+    short:"The church recognized the books that had recognized themselves — not by committee, but by use.",
+    body:[
+      "A common myth holds that the canon was chosen at the Council of Nicaea (AD 325) by political maneuvering. This is historically false: Nicaea didn't address canon at all; it addressed the divinity of Christ.",
+      "The actual process was much more organic. By the early second century — well before any council — the four gospels and Paul's letters were already being copied, read in worship, and treated as authoritative across the Roman world. Lists of accepted books appear early: the Muratorian Fragment (c. AD 170) names most of what became the NT. Athanasius's Easter letter of AD 367 gives the full 27-book list we have today, and councils at Hippo (393) and Carthage (397) ratified what was already universally received.",
+      "The criteria the early church used were straightforward: apostolic origin (written by an apostle or close associate), orthodoxy of content (consistent with what the apostles taught), and widespread acceptance and use. Books like the Gospel of Thomas were rejected not because they were suppressed but because they were late (mid-second century), Gnostic in character, and never accepted by the wider church.",
+      "The canon wasn't imposed. It was recognized."
+    ],
+    sources:[
+      {label:"F.F. Bruce, The Canon of Scripture (1988)",note:"Standard scholarly treatment"},
+      {label:"Michael Kruger, Canon Revisited (2012)",note:"How the early church recognized canonical books"},
+      {label:"Muratorian Fragment (c. AD 170)",note:"Earliest surviving canonical list"}
+    ],
+    scriptures:[{book:"2PE",ch:3,verses:[15,16]}]
+  },
+
+  // ── God & Reason ──────────────────────────────────────────────────────────
+  {
+    id:"science-and-faith",
+    cat:"reason",
+    q:"Can a thinking person believe in God in a scientific age?",
+    short:"Many of the founders of modern science did — and many leading scientists still do.",
+    body:[
+      "The supposed war between science and Christian faith is a 19th-century myth, mostly propagated by anti-religious polemicists like Andrew Dickson White and John William Draper. The historical reality is that modern science arose largely *within* Christian Europe, driven by the conviction — drawn directly from Genesis — that the universe was the orderly work of a rational Creator and could therefore be intelligibly studied.",
+      "Newton wrote more on theology than on physics. Kepler, Galileo, Boyle, Faraday, Maxwell, Mendel — all Christians who saw their work as exploring God's creation. The current head of the Human Genome Project, Francis Collins, is an evangelical Christian. The director of the Vatican Observatory is a working astronomer. The Templeton Prize, awarded for advances in religion, has gone to multiple Nobel-prize-winning scientists.",
+      "Science describes *how* the natural world works. It cannot, by its method, answer *why there is anything at all*, what is good, why consciousness exists, or whether life has meaning. These are not failures of science — they're questions outside its toolkit. Christianity claims to address them. Whether it does so truly is a separate question, but the framing that one must choose between science and faith is itself unscientific."
+    ],
+    sources:[
+      {label:"Francis Collins, The Language of God (2006)",note:"Director of NIH on faith and science"},
+      {label:"John Lennox, God's Undertaker (2009)",note:"Oxford mathematician on whether science has buried God"},
+      {label:"Alvin Plantinga, Where the Conflict Really Lies (2011)",note:"Philosopher: the real conflict is between naturalism and science, not science and theism"}
+    ],
+    scriptures:[{book:"PSA",ch:19,verses:[1,4]},{book:"ROM",ch:1,verses:[19,20]}]
+  },
+  {
+    id:"miracles-possible",
+    cat:"reason",
+    q:"Aren't miracles by definition impossible?",
+    short:"Only if you've already decided God doesn't exist.",
+    body:[
+      "David Hume argued in 1748 that no testimony could ever establish a miracle, because miracles are by definition violations of natural law, and natural law is established by universal experience. The argument has been profoundly influential — and is also widely recognized to be circular.",
+      "Hume's argument works like this: (1) Miracles violate natural law. (2) Natural law describes what always happens. (3) Therefore, miracles never happen, and any report of one must be mistaken. But step 2 quietly assumes the conclusion. If a miracle ever did happen, it would by Hume's definition be impossible to recognize. The argument doesn't refute miracles; it just rules them out by definition.",
+      "A more honest framing: if there is no God, miracles are extremely unlikely (essentially impossible). If there is a God who created the natural order, then he can act within it as freely as a novelist can write a surprise into her story. The real question isn't whether miracles are possible in the abstract — it's whether the evidence for any particular miracle (above all, the resurrection of Jesus) is strong enough to warrant belief. That's a question of historical evidence, not a priori philosophy."
+    ],
+    sources:[
+      {label:"C.S. Lewis, Miracles (1947)",note:"Classic philosophical treatment"},
+      {label:"Craig Keener, Miracles: The Credibility of the New Testament Accounts (2 vols., 2011)",note:"1,200-page scholarly survey of contemporary miracle claims worldwide"},
+      {label:"John Earman, Hume's Abject Failure (2000)",note:"Secular philosopher dismantling Hume's argument"}
+    ],
+    scriptures:[{book:"JHN",ch:2,verses:[1,11]},{book:"JHN",ch:11,verses:[38,44]}]
+  },
+  {
+    id:"god-exists",
+    cat:"reason",
+    q:"How could anyone prove God exists?",
+    short:"You probably can't \"prove\" it the way you'd prove a math theorem. But the cumulative case is substantial.",
+    body:[
+      "Proofs in the strict sense work in math and formal logic. In the real world — history, science, ethics — we work with cumulative evidence and inference to the best explanation. The case for God is built like a courtroom case, not like a geometry proof.",
+      "The classic strands: The cosmological argument (everything that begins to exist has a cause; the universe began to exist; therefore the universe has a cause beyond itself). The fine-tuning argument (the fundamental constants of physics are so precisely calibrated for life that even leading atheist physicists call this \"deeply puzzling\"). The moral argument (if there is no God, there are no truly binding moral facts, but moral facts seem real). The argument from consciousness (subjective experience is hard to explain in purely material terms). The argument from religious experience (billions of people across all cultures report encounters with the divine that they cannot rationally dismiss).",
+      "None of these *proves* the Christian God by itself. But together they make theism a rational position — and Christianity in particular is anchored by something the other arguments don't provide: a specific historical event (the resurrection) claimed by witnesses willing to die for the claim."
+    ],
+    sources:[
+      {label:"William Lane Craig, Reasonable Faith (3rd ed., 2008)",note:"Most-cited contemporary apologetics text"},
+      {label:"Alvin Plantinga, Warranted Christian Belief (2000)",note:"Major philosophical defense of theistic rationality"},
+      {label:"Timothy Keller, The Reason for God (2008)",note:"Accessible cumulative case"}
+    ],
+    scriptures:[{book:"PSA",ch:19,verses:[1]},{book:"ROM",ch:1,verses:[20]},{book:"ACT",ch:17,verses:[24,28]}]
+  },
+
+  // ── Suffering & Evil ──────────────────────────────────────────────────────
+  {
+    id:"problem-of-evil",
+    cat:"suffering",
+    q:"If God is good and powerful, why is there so much suffering?",
+    short:"The Christian answer isn't a tidy formula. It's a person who entered into it.",
+    body:[
+      "This is the hardest question in Christian theology and the place where pat answers cause real damage. The honest beginning is to say that suffering is genuinely terrible, that some of it is incomprehensible, and that anyone who suggests otherwise is lying.",
+      "The traditional Christian answer has several layers. (1) Much suffering is the consequence of human freedom — the freedom God gave us so love would be possible. A world where we cannot choose evil is a world where we cannot choose good either. (2) Christianity has never claimed this present world is the way God ultimately intends it; the prophets and apostles wait for a new heaven and new earth where every tear is wiped away. (3) Some suffering, scripture suggests, refines and matures us in ways comfort cannot.",
+      "But the deepest Christian answer is not an argument. It's the cross. The God of Christianity is not a distant deity watching from above; he is the God who, in Christ, entered into the worst of human suffering — was tortured, was abandoned, died. Whatever else the cross means, it means that God doesn't ask us to bear anything he himself refused to bear. The Christian doesn't claim to have solved the problem of suffering. The Christian claims that God has not left us alone in it."
+    ],
+    sources:[
+      {label:"C.S. Lewis, The Problem of Pain (1940) and A Grief Observed (1961)",note:"The first written as an argument, the second after his wife's death"},
+      {label:"Tim Keller, Walking with God Through Pain and Suffering (2013)",note:"Pastoral and philosophical treatment"},
+      {label:"Alvin Plantinga, God, Freedom, and Evil (1974)",note:"Philosophical free-will defense"}
+    ],
+    scriptures:[{book:"ROM",ch:8,verses:[18,25]},{book:"REV",ch:21,verses:[1,5]},{book:"ISA",ch:53,verses:[3,5]}]
+  },
+  {
+    id:"hell",
+    cat:"suffering",
+    q:"How can a loving God send anyone to hell?",
+    short:"He doesn't. He honors the choice of those who refuse him.",
+    body:[
+      "C.S. Lewis: \"There are only two kinds of people in the end: those who say to God, 'Thy will be done,' and those to whom God says, in the end, 'Thy will be done.' All that are in hell, choose it.\"",
+      "The popular image of hell as a torture chamber God uses to punish those who annoyed him is not what Christianity has historically taught. The biblical pictures — fire, darkness, gnashing of teeth, weeping — are images of separation and self-destruction, not sadism. The fundamental nature of hell is what happens when a person, given every chance, finally and definitively says no to God. God doesn't override the no. He honors it.",
+      "This raises hard secondary questions about justice, about those who never heard, about the duration and intensity of judgment, which Christians have debated seriously. But the framing that hell is God being cruel reverses what the biblical writers actually claim: hell is the consequence of resisting a love that will not coerce. The God of Christianity \"is patient toward you, not wishing that any should perish, but that all should reach repentance\" (2 Peter 3:9).",
+      "If hell is real, then this life matters more than we usually admit."
+    ],
+    sources:[
+      {label:"C.S. Lewis, The Great Divorce (1945)",note:"Lewis's parable of heaven and hell as choices"},
+      {label:"Tim Keller, \"The Importance of Hell\" (2009)",note:"Pastoral essay on why this doctrine matters"}
+    ],
+    scriptures:[{book:"2PE",ch:3,verses:[9]},{book:"MAT",ch:25,verses:[31,46]},{book:"REV",ch:20,verses:[11,15]}]
+  },
+
+  // ── Other Faiths ──────────────────────────────────────────────────────────
+  {
+    id:"all-religions-same",
+    cat:"faiths",
+    q:"Aren't all religions basically saying the same thing?",
+    short:"On the surface, sometimes. On the central claims, never.",
+    body:[
+      "World religions share much at the level of ethics. Love your neighbor, don't lie, don't murder — versions of these appear in nearly every major tradition. This is significant, and Christians should celebrate it: the apostle Paul taught that God's moral law is written on every human heart (Romans 2:14-15).",
+      "But where religions agree on ethics, they sharply disagree on the questions that ethics depends on. Who is God? Is there one God, many gods, no God, or is reality itself God? Is the material world good (as in Christianity and Judaism), illusory (as in some Hindu and Buddhist schools), or fallen (as in Gnosticism)? What is the human problem — ignorance (Buddhism), pride (Christianity), bad karma (Hinduism), wrong submission (Islam)? What is the solution — enlightenment, works, ritual, faith in a savior?",
+      "Christianity's central claim — that the eternal God became a human being, died for human sin, and rose bodily from the dead — is rejected as either false or blasphemous by every other major world religion. Islam denies Jesus died. Judaism denies he is Messiah. Hinduism would accept him as one avatar among many but reject any exclusive claim. Buddhism denies the relevance of any divine intervention. \"All religions are the same\" is itself a particular religious claim — usually a modern Western one — that requires rejecting what each tradition actually teaches about itself."
+    ],
+    sources:[
+      {label:"Stephen Prothero, God Is Not One (2010)",note:"Religious studies scholar (not a Christian apologist) on why the \"all religions are one\" view is incorrect"},
+      {label:"C.S. Lewis, Mere Christianity, Book II",note:"On the unique claims of Christianity"}
+    ],
+    scriptures:[{book:"JHN",ch:14,verses:[6]},{book:"ACT",ch:4,verses:[12]}]
+  },
+  {
+    id:"never-heard",
+    cat:"faiths",
+    q:"What about people who never heard about Jesus?",
+    short:"Christians have debated this for centuries. The Bible's clearest answer is: God will judge justly.",
+    body:[
+      "This is one of the genuinely hard questions, and Christians have answered it in several ways without claiming certainty on every detail.",
+      "Romans 1 and 2 teach that all people have access to some knowledge of God — through creation (the existence and design of the world point to a Creator) and through conscience (the moral law written on every human heart). Romans 2:14-15 says Gentiles \"who do not have the law... show that the work of the law is written on their hearts.\" Whatever God's judgment of such people, it will be just; he will not condemn anyone for what they had no possible way of knowing.",
+      "Some Christians (the \"inclusivist\" position) believe that those who respond to whatever light they have, like Old Testament saints, may be saved through Christ even without explicit knowledge of him. Others (the \"exclusivist\" position) hold that conscious faith in Christ is necessary, which makes mission and evangelism urgent. Both groups affirm that no one is condemned arbitrarily or for ignorance they could not overcome.",
+      "What scripture is clear about: God is just (Genesis 18:25), wants all people to come to him (1 Timothy 2:4), and will judge every person according to what they did with what they were given (Romans 2:6-11). It also calls those who *have* heard to take the good news to those who haven't."
+    ],
+    sources:[
+      {label:"John Stott, Evangelical Truth (1999)",note:"Balanced treatment of the question"},
+      {label:"Christopher Wright, The Mission of God (2006)",note:"On God's heart for all peoples"}
+    ],
+    scriptures:[{book:"ROM",ch:2,verses:[14,16]},{book:"GEN",ch:18,verses:[25]},{book:"1TI",ch:2,verses:[3,6]}]
+  },
+
+  // ── The Church ────────────────────────────────────────────────────────────
+  {
+    id:"christianity-harm",
+    cat:"church",
+    q:"Hasn't Christianity caused enormous harm — Crusades, slavery, abuse?",
+    short:"Yes, sometimes — and also some of the greatest good in history. Both deserve honesty.",
+    body:[
+      "Christians have done terrible things in Jesus's name. The Crusades, the Spanish Inquisition, the wars of religion, the church's defense of slavery in parts of the American South, and the contemporary horror of clergy sexual abuse — these are real. Honest engagement with church history means refusing to whitewash them.",
+      "At the same time, the historical ledger is not what the standard narrative suggests. The same religion that produced the Inquisition also abolished slavery — abolitionists like William Wilberforce, Frederick Douglass, and the Quakers were driven by explicitly Christian convictions. Christians invented the hospital, the orphanage, and the university; founded most early universities in Europe and America; established the modern human rights tradition (rooted in *imago Dei*); led the civil rights movement in the U.S.; and still do most of the global work on famine relief, refugee care, and medical mission today. Sociologist Rodney Stark and historian Tom Holland (neither one a believer for most of their careers) have argued at length that Western moral assumptions — universal human dignity, care for the weak, equality before the law — are downstream of Christianity in ways most modern people have forgotten.",
+      "The right response to historical abuses isn't to dismiss Christianity but to ask whether those who committed them were acting consistent with Christ's teaching, or in defiance of it. Jesus condemned religious hypocrisy more sharply than any other sin. The fact that his followers have often failed him doesn't disprove him; it confirms what he said about human nature."
+    ],
+    sources:[
+      {label:"Tom Holland, Dominion (2019)",note:"Secular historian on how Christianity shaped Western moral imagination"},
+      {label:"Rodney Stark, The Triumph of Christianity (2011)",note:"Sociologist on the historical impact of Christianity"},
+      {label:"Mark Noll, The Civil War as a Theological Crisis (2006)",note:"Honest treatment of the church and slavery"}
+    ],
+    scriptures:[{book:"MAT",ch:7,verses:[15,23]},{book:"JAS",ch:1,verses:[26,27]}]
+  },
+  {
+    id:"hypocrites",
+    cat:"church",
+    q:"Why are Christians so hypocritical?",
+    short:"Because we are. And Jesus said the same thing more sharply than any skeptic.",
+    body:[
+      "Jesus's harshest condemnations were not for the irreligious. They were for the religious hypocrites of his own day — the Pharisees who outwardly performed piety while inwardly were full of pride, greed, and self-righteousness. He called them \"whitewashed tombs,\" \"blind guides,\" a \"brood of vipers.\" The critique of Christian hypocrisy didn't begin with skeptics. It began with Christ.",
+      "What this means is that hypocrisy among Christians, while painful, is not actually evidence against Christianity. It's evidence that what Jesus diagnosed — that human beings, religious or not, are deeply flawed — is exactly what we observe. The church is full of sinners. Always has been. It was founded by twelve men, one of whom betrayed Jesus, one of whom denied him three times, and most of whom abandoned him at his arrest. The New Testament epistles spend most of their time addressing the failures of the very communities they were written to.",
+      "What the gospel claims is not that Christians become perfect — it's that they are forgiven, and being slowly transformed. \"Christian\" doesn't mean \"morally superior.\" It means \"forgiven sinner trying to follow Jesus.\" A church full of perfect people would have no room for any of us. The right response to Christian hypocrisy is not to write off Christ — it's to find the Christ his hypocritical followers have failed to imitate, and to follow him for yourself."
+    ],
+    sources:[
+      {label:"Philip Yancey, What's So Amazing About Grace? (1997)",note:"On grace and the failures of the church"},
+      {label:"Brennan Manning, The Ragamuffin Gospel (1990)",note:"On the gospel for failed Christians"}
+    ],
+    scriptures:[{book:"MAT",ch:23,verses:[27,28]},{book:"ROM",ch:7,verses:[15,25]},{book:"1JN",ch:1,verses:[8,10]}]
+  }
+];
+function getCaseQuestion(id){return CASE_QUESTIONS.find(c=>c.id===id)}
+function getCaseCategory(id){return CASE_CATEGORIES.find(c=>c.id===id)}
+
+/* ============================================================
    LOCATION ENRICHMENT — eras, regions, chapter index
 ============================================================ */
 const LOC_META={
@@ -3349,7 +3797,8 @@ const ROUTES=[
   {test:p=>p[0]==="disclaimer",view:"disclaimer"},
   {test:p=>p[0]==="dashboard",view:"dashboard"},
   {test:p=>p[0]==="plans",view:"plans"},
-  {test:p=>p[0]==="notes",view:"notes"}
+  {test:p=>p[0]==="notes",view:"notes"},
+  {test:p=>p[0]==="case",view:"case"}
 ];
 
 const NAV_ITEMS=[
@@ -3366,6 +3815,7 @@ const NAV_ITEMS=[
   {href:"#/memory",label:"Memory"},
   {href:"#/plans",label:"Plans"},
   {href:"#/notes",label:"Legacy Bible"},
+  {href:"#/case",label:"The Case"},
   {href:"#/dashboard",label:"Dashboard"}
 ];
 
@@ -3735,6 +4185,92 @@ VIEWS.notes=function(){
   });
 };
 
+/* ---- THE CASE (skeptics' Q&A) ---- */
+VIEWS.case=function(parts,params){
+  let activeCat=(params&&params.cat&&CASE_CATEGORIES.find(c=>c.id===params.cat))?params.cat:"all";
+  let openId=(params&&params.q)?params.q:null;
+
+  const render=()=>{
+    const filtered=activeCat==="all"?CASE_QUESTIONS:CASE_QUESTIONS.filter(q=>q.cat===activeCat);
+    const cards=filtered.map(item=>{
+      const cat=getCaseCategory(item.cat);
+      const isOpen=item.id===openId;
+      const sourcesHtml=item.sources?item.sources.map(s=>
+        `<li class="case-source-item">
+          <span class="case-source-label">${esc(s.label)}</span>
+          ${s.note?`<span class="case-source-note">${esc(s.note)}</span>`:""}
+        </li>`
+      ).join(""):"";
+      const scriptsHtml=item.scriptures?item.scriptures.map(s=>{
+        const ref=fmtRef(s.book,s.ch,s.verses);
+        return `<a class="case-script-chip" href="#/read?b=${s.book}&c=${s.ch}">${esc(ref)}</a>`;
+      }).join(""):"";
+      const bodyParas=item.body.map(p=>`<p>${esc(p)}</p>`).join("");
+      return `<div class="case-card ${isOpen?"open":""}" id="case-${item.id}">
+        <button class="case-card-head" data-toggle="${item.id}" aria-expanded="${isOpen}">
+          <span class="case-card-marker" style="background:${cat?cat.color:"#cdae5f"}"></span>
+          <span class="case-card-text">
+            <div class="case-card-cat">${esc(cat?cat.label:item.cat)}</div>
+            <h3 class="case-card-q">${esc(item.q)}</h3>
+            <p class="case-card-short">${esc(item.short)}</p>
+          </span>
+          <span class="case-card-toggle" aria-hidden="true">+</span>
+        </button>
+        ${isOpen?`<div class="case-card-body">
+          ${bodyParas}
+          ${sourcesHtml?`<div class="case-card-section">
+            <div class="case-card-section-label">Sources &amp; further reading</div>
+            <ul class="case-source-list">${sourcesHtml}</ul>
+          </div>`:""}
+          ${scriptsHtml?`<div class="case-card-section">
+            <div class="case-card-section-label">Open the passages</div>
+            <div class="case-script-row">${scriptsHtml}</div>
+          </div>`:""}
+        </div>`:""}
+      </div>`;
+    }).join("");
+
+    const catTabs=`<button class="case-cat-tab ${activeCat==="all"?"active":""}" data-cat="all">All questions</button>`+
+      CASE_CATEGORIES.map(c=>`<button class="case-cat-tab ${activeCat===c.id?"active":""}" data-cat="${c.id}">${esc(c.label)}</button>`).join("");
+
+    $("#app").innerHTML=pageShell({
+      kicker:"The Case",
+      title:"Hard questions. Honest answers.",
+      subtitle:"For seekers, skeptics, and anyone willing to ask. The evidence does not coerce belief — but it does merit a hearing.",
+      body:`
+        <div class="case-intro">
+          <p>If you have doubts about the Christian faith, you are not alone — and you are not unwelcome. Some of the deepest believers in history were the most relentless questioners. This section gathers the questions skeptics actually ask, with answers drawn from history, philosophy, and Scripture itself. Tap any question to read more. Every claim points back to sources you can investigate yourself.</p>
+        </div>
+        <div class="case-cat-tabs">${catTabs}</div>
+        <div class="case-list">${cards}</div>
+        <p class="case-disclaimer">These answers are starting points, not final words. Faith is not a conclusion you reach by argument alone — it is a posture of the whole person before God. But honest reasoning matters, and Christianity has nothing to fear from honest questions.</p>
+      `
+    });
+
+    // Wire category tabs
+    $$(".case-cat-tab").forEach(t=>t.addEventListener("click",()=>{
+      activeCat=t.getAttribute("data-cat");
+      openId=null;
+      render();
+    }));
+    // Wire expand toggles
+    $$("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{
+      const id=b.getAttribute("data-toggle");
+      openId=(openId===id)?null:id;
+      render();
+      // After re-render, scroll to the opened card
+      if(openId){
+        const el=document.getElementById("case-"+openId);
+        if(el){
+          setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),50);
+        }
+      }
+    }));
+  };
+
+  render();
+};
+
 
 /* ---- TRUTH vs LIE ---- */
 VIEWS.truths=function(parts,params){
@@ -3989,25 +4525,246 @@ function renderTodayHome(){
   const lastEncounterEntry=journal.find(j=>j.attachTo?.kind==="encounter");
   const lastEncounter=lastEncounterEntry?ENCOUNTERS.find(e=>e.id===lastEncounterEntry.attachTo.ref):null;
 
-  // A simple "anchor verse for today" — rotates by day-of-year so it's stable per day.
-  const ANCHOR_VERSES=[
+  // ── Anchor verses — a different scripture every hour, all year long ─────────
+  // 150 curated "highlights" with short text + algorithmic walk through devotional
+  // books fills out the remaining 8,610 slots for a full 24×365 = 8,760 unique
+  // hourly anchors. Cycles annually. Renders short text when available, otherwise
+  // shows a graceful "Today's passage →" framing keyed to the reference.
+
+  const ANCHOR_HIGHLIGHTS=[
+    // Psalms — the heart of the prayer life of the church
     {book:"PSA",ch:46,v:10,short:"Be still, and know that I am God."},
     {book:"PSA",ch:23,v:1,short:"The LORD is my shepherd; I shall not want."},
-    {book:"ISA",ch:41,v:10,short:"Fear not, for I am with you."},
-    {book:"PRO",ch:3,v:5,short:"Trust in the LORD with all your heart."},
-    {book:"MAT",ch:11,v:28,short:"Come to me, all who are weary."},
-    {book:"JHN",ch:14,v:27,short:"Peace I leave with you."},
-    {book:"PHP",ch:4,v:6,short:"Be anxious for nothing."},
-    {book:"ROM",ch:8,v:28,short:"All things work together for good."},
-    {book:"LAM",ch:3,v:23,short:"His mercies are new every morning."},
+    {book:"PSA",ch:23,v:4,short:"Though I walk through the valley of the shadow of death, I will fear no evil."},
+    {book:"PSA",ch:27,v:1,short:"The LORD is my light and my salvation; whom shall I fear?"},
+    {book:"PSA",ch:27,v:14,short:"Wait for the LORD; be strong, and let your heart take courage."},
+    {book:"PSA",ch:34,v:8,short:"Taste and see that the LORD is good."},
+    {book:"PSA",ch:34,v:18,short:"The LORD is near to the brokenhearted."},
+    {book:"PSA",ch:37,v:4,short:"Delight yourself in the LORD, and He will give you the desires of your heart."},
+    {book:"PSA",ch:37,v:7,short:"Be still before the LORD and wait patiently for Him."},
+    {book:"PSA",ch:42,v:11,short:"Why are you cast down, O my soul? Hope in God."},
+    {book:"PSA",ch:51,v:10,short:"Create in me a clean heart, O God."},
+    {book:"PSA",ch:62,v:1,short:"For God alone my soul waits in silence."},
+    {book:"PSA",ch:73,v:26,short:"My flesh and my heart may fail, but God is the strength of my heart."},
+    {book:"PSA",ch:84,v:10,short:"Better is one day in your courts than a thousand elsewhere."},
+    {book:"PSA",ch:90,v:12,short:"Teach us to number our days, that we may get a heart of wisdom."},
+    {book:"PSA",ch:91,v:1,short:"He who dwells in the shelter of the Most High will abide in the shadow of the Almighty."},
+    {book:"PSA",ch:103,v:12,short:"As far as the east is from the west, so far has He removed our transgressions from us."},
+    {book:"PSA",ch:118,v:24,short:"This is the day the LORD has made; let us rejoice and be glad in it."},
+    {book:"PSA",ch:119,v:105,short:"Your word is a lamp to my feet and a light to my path."},
+    {book:"PSA",ch:121,v:1,short:"I lift up my eyes to the hills. From where does my help come?"},
+    {book:"PSA",ch:127,v:1,short:"Unless the LORD builds the house, those who build it labor in vain."},
+    {book:"PSA",ch:130,v:5,short:"I wait for the LORD, my soul waits, and in His word I hope."},
+    {book:"PSA",ch:136,v:1,short:"Give thanks to the LORD, for He is good; His steadfast love endures forever."},
     {book:"PSA",ch:139,v:14,short:"I am fearfully and wonderfully made."},
-    {book:"2CO",ch:12,v:9,short:"My grace is sufficient for you."},
-    {book:"JOS",ch:1,v:9,short:"Be strong and courageous."},
-    {book:"GAL",ch:2,v:20,short:"I have been crucified with Christ."},
-    {book:"PSA",ch:34,v:18,short:"The LORD is near to the brokenhearted."}
+    {book:"PSA",ch:139,v:23,short:"Search me, O God, and know my heart."},
+    {book:"PSA",ch:143,v:8,short:"Let me hear in the morning of your steadfast love."},
+    {book:"PSA",ch:145,v:18,short:"The LORD is near to all who call on Him in truth."},
+    {book:"PSA",ch:147,v:3,short:"He heals the brokenhearted and binds up their wounds."},
+    {book:"PSA",ch:150,v:6,short:"Let everything that has breath praise the LORD."},
+
+    // Proverbs — wisdom for living
+    {book:"PRO",ch:3,v:5,short:"Trust in the LORD with all your heart, and do not lean on your own understanding."},
+    {book:"PRO",ch:3,v:6,short:"In all your ways acknowledge Him, and He will make straight your paths."},
+    {book:"PRO",ch:4,v:23,short:"Keep your heart with all vigilance, for from it flow the springs of life."},
+    {book:"PRO",ch:16,v:9,short:"The heart of man plans his way, but the LORD establishes his steps."},
+    {book:"PRO",ch:18,v:10,short:"The name of the LORD is a strong tower; the righteous run into it and are safe."},
+    {book:"PRO",ch:27,v:17,short:"Iron sharpens iron, and one man sharpens another."},
+    {book:"PRO",ch:31,v:25,short:"Strength and dignity are her clothing, and she laughs at the time to come."},
+
+    // Isaiah — comfort and the suffering servant
+    {book:"ISA",ch:9,v:6,short:"For to us a child is born, to us a son is given."},
+    {book:"ISA",ch:26,v:3,short:"You keep him in perfect peace whose mind is stayed on you."},
+    {book:"ISA",ch:30,v:15,short:"In returning and rest you shall be saved; in quietness and trust shall be your strength."},
+    {book:"ISA",ch:40,v:8,short:"The grass withers, the flower fades, but the word of our God will stand forever."},
+    {book:"ISA",ch:40,v:29,short:"He gives power to the faint, and to him who has no might He increases strength."},
+    {book:"ISA",ch:40,v:31,short:"They who wait for the LORD shall renew their strength."},
+    {book:"ISA",ch:41,v:10,short:"Fear not, for I am with you; be not dismayed, for I am your God."},
+    {book:"ISA",ch:43,v:2,short:"When you pass through the waters, I will be with you."},
+    {book:"ISA",ch:43,v:19,short:"Behold, I am doing a new thing; now it springs forth, do you not perceive it?"},
+    {book:"ISA",ch:53,v:5,short:"He was wounded for our transgressions; He was crushed for our iniquities."},
+    {book:"ISA",ch:55,v:8,short:"My thoughts are not your thoughts, neither are your ways my ways, declares the LORD."},
+    {book:"ISA",ch:55,v:11,short:"My word shall not return to me empty, but shall accomplish that which I purpose."},
+
+    // Jeremiah & Lamentations — hope in the rubble
+    {book:"JER",ch:29,v:11,short:"For I know the plans I have for you, declares the LORD, plans for welfare and not for evil."},
+    {book:"JER",ch:31,v:3,short:"I have loved you with an everlasting love."},
+    {book:"JER",ch:33,v:3,short:"Call to me and I will answer you."},
+    {book:"LAM",ch:3,v:22,short:"The steadfast love of the LORD never ceases; His mercies never come to an end."},
+    {book:"LAM",ch:3,v:23,short:"His mercies are new every morning; great is your faithfulness."},
+
+    // Pentateuch — covenant
+    {book:"GEN",ch:1,v:1,short:"In the beginning, God created the heavens and the earth."},
+    {book:"GEN",ch:1,v:27,short:"So God created man in His own image, in the image of God He created him."},
+    {book:"GEN",ch:12,v:2,short:"I will bless you, and make your name great, so that you will be a blessing."},
+    {book:"GEN",ch:50,v:20,short:"As for you, you meant evil against me, but God meant it for good."},
+    {book:"EXO",ch:14,v:14,short:"The LORD will fight for you, and you have only to be silent."},
+    {book:"EXO",ch:33,v:14,short:"My presence will go with you, and I will give you rest."},
+    {book:"DEU",ch:6,v:5,short:"You shall love the LORD your God with all your heart and with all your soul."},
+    {book:"DEU",ch:31,v:6,short:"Be strong and courageous. Do not fear. The LORD your God goes with you."},
+    {book:"JOS",ch:1,v:9,short:"Be strong and courageous. Do not be frightened, for the LORD your God is with you wherever you go."},
+    {book:"JOS",ch:24,v:15,short:"As for me and my house, we will serve the LORD."},
+
+    // Other Old Testament
+    {book:"1SA",ch:16,v:7,short:"The LORD looks on the heart."},
+    {book:"NEH",ch:8,v:10,short:"The joy of the LORD is your strength."},
+    {book:"JOB",ch:19,v:25,short:"For I know that my Redeemer lives."},
+    {book:"ECC",ch:3,v:1,short:"For everything there is a season, and a time for every matter under heaven."},
+    {book:"MIC",ch:6,v:8,short:"He has told you, O man, what is good: do justice, love kindness, walk humbly with your God."},
+    {book:"ZEP",ch:3,v:17,short:"The LORD your God is in your midst, a mighty one who will save."},
+
+    // Gospels — the words of Jesus
+    {book:"MAT",ch:5,v:3,short:"Blessed are the poor in spirit, for theirs is the kingdom of heaven."},
+    {book:"MAT",ch:5,v:6,short:"Blessed are those who hunger and thirst for righteousness, for they shall be satisfied."},
+    {book:"MAT",ch:5,v:14,short:"You are the light of the world."},
+    {book:"MAT",ch:6,v:33,short:"Seek first the kingdom of God and His righteousness."},
+    {book:"MAT",ch:6,v:34,short:"Do not be anxious about tomorrow."},
+    {book:"MAT",ch:7,v:7,short:"Ask, and it will be given to you; seek, and you will find."},
+    {book:"MAT",ch:11,v:28,short:"Come to me, all who labor and are heavy laden, and I will give you rest."},
+    {book:"MAT",ch:11,v:29,short:"Take my yoke upon you, and learn from me, for I am gentle and lowly in heart."},
+    {book:"MAT",ch:16,v:24,short:"If anyone would come after me, let him deny himself and take up his cross and follow me."},
+    {book:"MAT",ch:22,v:37,short:"You shall love the Lord your God with all your heart."},
+    {book:"MAT",ch:28,v:20,short:"Behold, I am with you always, to the end of the age."},
+    {book:"MRK",ch:9,v:24,short:"I believe; help my unbelief!"},
+    {book:"MRK",ch:10,v:45,short:"The Son of Man came not to be served but to serve, and to give His life as a ransom for many."},
+    {book:"LUK",ch:1,v:37,short:"Nothing will be impossible with God."},
+    {book:"LUK",ch:6,v:38,short:"Give, and it will be given to you."},
+    {book:"LUK",ch:12,v:32,short:"Fear not, little flock, for it is your Father's good pleasure to give you the kingdom."},
+    {book:"JHN",ch:1,v:14,short:"The Word became flesh and dwelt among us."},
+    {book:"JHN",ch:3,v:16,short:"For God so loved the world, that He gave His only Son."},
+    {book:"JHN",ch:8,v:32,short:"You will know the truth, and the truth will set you free."},
+    {book:"JHN",ch:10,v:10,short:"I came that they may have life and have it abundantly."},
+    {book:"JHN",ch:10,v:27,short:"My sheep hear my voice, and I know them, and they follow me."},
+    {book:"JHN",ch:11,v:25,short:"I am the resurrection and the life."},
+    {book:"JHN",ch:13,v:34,short:"A new commandment I give to you, that you love one another."},
+    {book:"JHN",ch:14,v:1,short:"Let not your hearts be troubled. Believe in God; believe also in me."},
+    {book:"JHN",ch:14,v:6,short:"I am the way, and the truth, and the life."},
+    {book:"JHN",ch:14,v:27,short:"Peace I leave with you; my peace I give to you."},
+    {book:"JHN",ch:15,v:5,short:"I am the vine; you are the branches. Whoever abides in me bears much fruit."},
+    {book:"JHN",ch:16,v:33,short:"In the world you will have tribulation. But take heart; I have overcome the world."},
+
+    // Acts & Pauline epistles
+    {book:"ACT",ch:1,v:8,short:"You will receive power when the Holy Spirit has come upon you."},
+    {book:"ACT",ch:20,v:35,short:"It is more blessed to give than to receive."},
+    {book:"ROM",ch:5,v:8,short:"While we were still sinners, Christ died for us."},
+    {book:"ROM",ch:8,v:1,short:"There is therefore now no condemnation for those who are in Christ Jesus."},
+    {book:"ROM",ch:8,v:28,short:"All things work together for good for those who love God."},
+    {book:"ROM",ch:8,v:31,short:"If God is for us, who can be against us?"},
+    {book:"ROM",ch:8,v:38,short:"Neither death nor life, nor angels nor rulers, will be able to separate us from the love of God."},
+    {book:"ROM",ch:12,v:1,short:"Present your bodies as a living sacrifice, holy and acceptable to God."},
+    {book:"ROM",ch:12,v:2,short:"Do not be conformed to this world, but be transformed by the renewal of your mind."},
+    {book:"ROM",ch:12,v:12,short:"Rejoice in hope, be patient in tribulation, be constant in prayer."},
+    {book:"ROM",ch:15,v:13,short:"May the God of hope fill you with all joy and peace in believing."},
+    {book:"1CO",ch:10,v:13,short:"God is faithful, and He will not let you be tempted beyond your ability."},
+    {book:"1CO",ch:13,v:4,short:"Love is patient and kind; love does not envy or boast."},
+    {book:"1CO",ch:13,v:7,short:"Love bears all things, believes all things, hopes all things, endures all things."},
+    {book:"1CO",ch:13,v:13,short:"So now faith, hope, and love abide, these three; but the greatest of these is love."},
+    {book:"1CO",ch:15,v:58,short:"Be steadfast, immovable, always abounding in the work of the Lord."},
+    {book:"2CO",ch:4,v:16,short:"Though our outer self is wasting away, our inner self is being renewed day by day."},
+    {book:"2CO",ch:5,v:7,short:"For we walk by faith, not by sight."},
+    {book:"2CO",ch:5,v:17,short:"If anyone is in Christ, he is a new creation. The old has passed away; the new has come."},
+    {book:"2CO",ch:12,v:9,short:"My grace is sufficient for you, for my power is made perfect in weakness."},
+    {book:"GAL",ch:2,v:20,short:"I have been crucified with Christ. It is no longer I who live, but Christ who lives in me."},
+    {book:"GAL",ch:5,v:22,short:"The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness."},
+    {book:"GAL",ch:6,v:9,short:"Let us not grow weary of doing good, for in due season we will reap, if we do not give up."},
+    {book:"EPH",ch:2,v:8,short:"By grace you have been saved through faith. And this is not your own doing; it is the gift of God."},
+    {book:"EPH",ch:2,v:10,short:"For we are His workmanship, created in Christ Jesus for good works."},
+    {book:"EPH",ch:3,v:20,short:"Now to Him who is able to do far more abundantly than all that we ask or think."},
+    {book:"EPH",ch:4,v:32,short:"Be kind to one another, tenderhearted, forgiving one another, as God in Christ forgave you."},
+    {book:"EPH",ch:6,v:10,short:"Be strong in the Lord and in the strength of His might."},
+    {book:"PHP",ch:1,v:6,short:"He who began a good work in you will bring it to completion at the day of Jesus Christ."},
+    {book:"PHP",ch:2,v:5,short:"Have this mind among yourselves, which is yours in Christ Jesus."},
+    {book:"PHP",ch:4,v:6,short:"Do not be anxious about anything, but in everything by prayer let your requests be made known to God."},
+    {book:"PHP",ch:4,v:7,short:"The peace of God, which surpasses all understanding, will guard your hearts and your minds."},
+    {book:"PHP",ch:4,v:8,short:"Whatever is true, whatever is honorable, whatever is just — think about these things."},
+    {book:"PHP",ch:4,v:13,short:"I can do all things through Him who strengthens me."},
+    {book:"PHP",ch:4,v:19,short:"My God will supply every need of yours according to His riches in glory in Christ Jesus."},
+    {book:"COL",ch:3,v:2,short:"Set your minds on things that are above, not on things that are on earth."},
+    {book:"COL",ch:3,v:23,short:"Whatever you do, work heartily, as for the Lord and not for men."},
+    {book:"1TH",ch:5,v:16,short:"Rejoice always, pray without ceasing, give thanks in all circumstances."},
+    {book:"2TI",ch:1,v:7,short:"God gave us a spirit not of fear but of power and love and self-control."},
+    {book:"2TI",ch:4,v:7,short:"I have fought the good fight, I have finished the race, I have kept the faith."},
+
+    // Hebrews & general epistles
+    {book:"HEB",ch:4,v:12,short:"The word of God is living and active, sharper than any two-edged sword."},
+    {book:"HEB",ch:4,v:16,short:"Let us then with confidence draw near to the throne of grace."},
+    {book:"HEB",ch:11,v:1,short:"Faith is the assurance of things hoped for, the conviction of things not seen."},
+    {book:"HEB",ch:12,v:1,short:"Let us run with endurance the race that is set before us."},
+    {book:"HEB",ch:12,v:2,short:"Looking to Jesus, the founder and perfecter of our faith."},
+    {book:"HEB",ch:13,v:5,short:"I will never leave you nor forsake you."},
+    {book:"HEB",ch:13,v:8,short:"Jesus Christ is the same yesterday and today and forever."},
+    {book:"JAS",ch:1,v:2,short:"Count it all joy, my brothers, when you meet trials of various kinds."},
+    {book:"JAS",ch:1,v:5,short:"If any of you lacks wisdom, let him ask God, who gives generously to all."},
+    {book:"JAS",ch:1,v:17,short:"Every good gift and every perfect gift is from above."},
+    {book:"JAS",ch:4,v:8,short:"Draw near to God, and He will draw near to you."},
+    {book:"1PE",ch:5,v:7,short:"Cast all your anxieties on Him, because He cares for you."},
+    {book:"1JN",ch:1,v:9,short:"If we confess our sins, He is faithful and just to forgive us our sins."},
+    {book:"1JN",ch:3,v:1,short:"See what kind of love the Father has given to us, that we should be called children of God."},
+    {book:"1JN",ch:4,v:18,short:"There is no fear in love, but perfect love casts out fear."},
+    {book:"1JN",ch:4,v:19,short:"We love because He first loved us."},
+    {book:"REV",ch:3,v:20,short:"Behold, I stand at the door and knock."},
+    {book:"REV",ch:21,v:4,short:"He will wipe away every tear from their eyes, and death shall be no more."},
+    {book:"REV",ch:21,v:5,short:"Behold, I am making all things new."},
+    {book:"REV",ch:22,v:20,short:"Surely I am coming soon. Amen. Come, Lord Jesus!"}
   ];
-  const dayIdx=Math.floor(Date.now()/86400000)%ANCHOR_VERSES.length;
-  const anchor=ANCHOR_VERSES[dayIdx];
+
+  // Per-chapter verse counts for the devotional books we walk through.
+  // Each array index = chapter - 1.
+  const ANCHOR_VC={
+    PSA:[6,12,8,8,12,10,17,9,20,18,7,8,6,7,5,11,15,50,14,9,13,31,6,10,22,12,14,9,11,12,24,11,22,22,28,12,40,22,13,17,13,11,5,26,17,11,9,14,20,23,19,9,6,7,23,13,11,11,17,12,8,12,11,10,13,20,7,35,36,5,24,20,28,23,10,12,20,72,13,19,16,8,18,12,13,17,7,18,52,17,16,15,5,23,11,13,12,9,9,5,8,28,22,35,45,48,43,13,31,7,10,10,9,8,18,19,2,29,176,7,8,9,4,8,5,6,6,6,8,8,3,18,3,3,21,26,9,8,24,13,10,7,12,15,21,10,20,14,9,6],
+    PRO:[33,22,35,27,23,35,27,36,18,32,31,28,25,35,33,33,28,24,29,30,31,27,27,34,22,35,27,28,27,33,31],
+    JHN:[51,25,36,54,47,71,53,59,41,42,57,50,38,31,27,33,26,40,42,31,25],
+    ROM:[32,29,31,25,21,23,25,39,33,21,36,21,14,23,33,27],
+    MAT:[25,23,17,25,48,34,29,34,38,42,30,50,58,36,39,28,27,35,30,34,46,46,39,51,46,75,66,20],
+    "1CO":[31,16,23,21,13,20,40,13,27,33,34,31,13,40,58,24],
+    "2CO":[24,17,18,18,21,18,16,24,15,18,33,21,14],
+    EPH:[23,22,21,32,33,24],
+    PHP:[30,30,21,23],
+    COL:[29,23,25,18],
+    HEB:[14,18,19,16,14,20,28,13,28,39,40,29,25],
+    JAS:[27,26,18,17,20],
+    "1PE":[25,25,22,19,14],
+    "1JN":[10,29,24,21,21],
+    GAL:[24,21,29,31,26,18],
+    "2TI":[18,26,17,22],
+    "1TH":[10,20,13,18,28],
+    LAM:[22,22,66,22,22],
+    ISA:[31,26,17,13,30,11,25,22,21,34,16,6,22,32,9,14,14,7,25,6,17,25,18,23,12,21,13,29,24,33,9,20,24,17,10,22,38,22,8,31,29,25,28,28,25,13,15,22,26,11,23,15,12,17,13,12,21,14,21,22,11,12,19,12,25,24]
+  };
+
+  // Order of books to walk after highlights are placed
+  const ANCHOR_WALK_ORDER=["PSA","PRO","JHN","ROM","MAT","1CO","2CO","EPH","PHP","COL","HEB","JAS","1PE","1JN","GAL","2TI","1TH","LAM","ISA"];
+
+  function _buildAnchorRotation(){
+    const out=[...ANCHOR_HIGHLIGHTS];
+    const seen=new Set(out.map(a=>a.book+"/"+a.ch+"/"+a.v));
+    for(const book of ANCHOR_WALK_ORDER){
+      const counts=ANCHOR_VC[book];
+      if(!counts) continue;
+      for(let ch=1; ch<=counts.length; ch++){
+        const vCount=counts[ch-1];
+        for(let v=1; v<=vCount; v++){
+          const key=book+"/"+ch+"/"+v;
+          if(seen.has(key)) continue;
+          seen.add(key);
+          out.push({book,ch,v});
+          if(out.length>=8760) return out;
+        }
+      }
+    }
+    return out;
+  }
+
+  // Build the full 8,760-entry rotation. Cached on window so we don't rebuild
+  // every time the home view re-renders.
+  if(!window._anchorRotation){
+    window._anchorRotation=_buildAnchorRotation();
+  }
+  const ANCHOR_VERSES=window._anchorRotation;
+  // Hour-of-year rotation: a different verse every hour, all year long.
+  // (Total slots = 24×365 = 8,760. Cycles annually.)
+  const hourIdx=Math.floor(Date.now()/3600000)%ANCHOR_VERSES.length;
+  const anchor=ANCHOR_VERSES[hourIdx];
 
   // Greeting based on hour
   const hour=new Date().getHours();
@@ -4025,8 +4782,11 @@ function renderTodayHome(){
         </div>
 
         <div class="today-anchor">
-          <span class="today-anchor-label">An anchor for today</span>
-          <p class="today-anchor-text">"${esc(anchor.short)}"</p>
+          <span class="today-anchor-label">${anchor.short?"An anchor for this hour":"Sit with this passage"}</span>
+          ${anchor.short
+            ? `<p class="today-anchor-text">&ldquo;${esc(anchor.short)}&rdquo;</p>`
+            : `<p class="today-anchor-text" style="font-style:italic;color:rgba(231,225,210,.7)">Today's passage waits for you.</p>`
+          }
           <a class="today-anchor-ref" href="#/read?b=${anchor.book}&c=${anchor.ch}&v=${anchor.v}">
             ${esc(fmtRef(anchor.book,anchor.ch,[anchor.v]))} ${ICO.arrowRight}
           </a>
@@ -4081,6 +4841,13 @@ function renderTodayHome(){
             <div class="today-path-kicker">Truth vs Lie</div>
             <div class="today-path-title">Name a lie. Read what is true.</div>
             <div class="today-path-meta">For when the thought in your head is louder than the truth</div>
+            <div class="today-path-arrow">${ICO.arrowRight}</div>
+          </a>
+
+          <a href="#/case" class="today-path">
+            <div class="today-path-kicker">The Case</div>
+            <div class="today-path-title">Hard questions, honest answers.</div>
+            <div class="today-path-meta">For seekers and skeptics — historical evidence, philosophy, and Scripture</div>
             <div class="today-path-arrow">${ICO.arrowRight}</div>
           </a>
 
